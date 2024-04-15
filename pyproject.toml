@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "course-django"
+name = "course_django"
 version = "0.1.0"
 description = ""
 authors = ["marcustas <stas.chernov@casafari.com>"]
@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "^4.2.6"
+ruff = "^0.3.7"
 
 
 [build-system]
