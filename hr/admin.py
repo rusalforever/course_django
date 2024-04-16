@@ -5,6 +5,8 @@ from hr.models import (
     Department,
     Employee,
     Position,
+    Company,
+
 )
 
 
@@ -27,4 +29,9 @@ class PositionAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('username', 'position', 'hire_date',)
+    list_display = ('username', 'position', 'hire_date', 'phone_number')
+
+
+@admin.register(Company)
+class Company(admin.ModelAdmin):
+    list_display = ('name', 'address', 'email', 'tax_code')
