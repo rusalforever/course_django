@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "course-django"
+name = "djangohomework"
 version = "0.1.0"
 description = ""
-authors = ["marcustas <stas.chernov@casafari.com>"]
+authors = ["kateryna <katerynakalnytskaya@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-django = "^4.2.6"
+python = "^3.12"
+django = "^5.0.4"
 
 
 [build-system]
