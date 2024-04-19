@@ -60,18 +60,3 @@ def querysets_examples(request):
 
     for position in Position.objects.iterator(chunk_size=1000):
         print(position.title)
-    Position.objects.iterator()
-    # Lookups
-    department = Department.objects.first()
-    positions_starting_with_d = Position.objects.filter(title__startswith='D')
-    positions_containing_manager = Position.objects.filter(title__icontains='teac')
-    positions_in_date_range = Position.objects.filter(department__name__range=('A', 'Z'))
-
-    # JOINs в Django (INNER JOIN приклад)
-    inner_joined = Position.objects.select_related('department')
-
-
-    # JOINs в Django (LEFT OUTER JOIN приклад)
-    left_joined = Department.objects.prefetch_related('positions').distinct()
-
-    return HttpResponse()
