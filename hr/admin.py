@@ -5,8 +5,13 @@ from hr.models import (
     Department,
     Employee,
     Position,
+    Company,
 )
 
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name_company', 'address', 'email', 'tax_code')
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
@@ -15,7 +20,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'department', 'is_manager')
+    list_display = ('title', 'department', 'is_manager', 'job_description')
 
     def save_model(self, request, obj, form, change):
         try:
@@ -27,4 +32,4 @@ class PositionAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('username', 'position', 'hire_date',)
+    list_display = ('username', 'position', 'hire_date', 'phone_number')
