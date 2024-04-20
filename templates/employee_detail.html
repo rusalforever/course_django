@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="employee-detail">
+        <h1 class="mb-4">Employee Detail</h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="row">First Name:</th>
+                    <td>{{ employee.first_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Last Name:</th>
+                    <td>{{ employee.last_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Email:</th>
+                    <td>{{ employee.email }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Position:</th>
+                    <td>{{ employee.position.title }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if user.is_superuser %}
+            <div class="mt-4">
+                <a href="{% url 'employee_update' employee.pk %}" class="btn btn-primary">Edit</a>
+                <form action="{% url 'employee_delete' employee.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
