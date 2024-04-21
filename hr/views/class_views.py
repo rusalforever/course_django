@@ -25,7 +25,8 @@ class EmployeeListView(View):
             employees = employees.filter(
                 Q(first_name__icontains=search)
                 | Q(last_name__icontains=search)
-                | Q(position__title__icontains=search),
+                | Q(position__title__icontains=search)
+                | Q(email__icontains=search),
             )
 
         context = {"employees": employees}
@@ -46,6 +47,17 @@ class EmployeeCreateView(UserPassesTestMixin, View):
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+class EmployeeDetailView(UserPassesTestMixin, View):
+    def get(self, request, pk):
+        employee = get_object_or_404(Employee, pk=pk)
+
+        return render(request, "employee_deteil_form.html", {'employee': employee})
+
+    def test_func(self):
+        return user_is_superadmin(self.request.user)
+
+
 
 
 class EmployeeUpdateView(UserPassesTestMixin, View):
