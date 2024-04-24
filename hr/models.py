@@ -27,7 +27,7 @@ class Department(models.Model):
     parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
-        unique_together = ('name', 'company')  # Унікальна комбінація імені та компанії
+        unique_together = ('name', 'company')
 
     def __str__(self):
         return self.name
@@ -36,6 +36,7 @@ class Department(models.Model):
 
 class Position(models.Model):
     title = models.CharField(max_length=200)
+    job_description = models.CharField(max_length=1300)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
 
@@ -54,3 +55,4 @@ class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey('Position', on_delete=models.SET_NULL, null=True, blank=True)
+    phone_number = models.CharField(max_length=10)
