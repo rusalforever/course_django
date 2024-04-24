@@ -1,12 +1,22 @@
-
-
-
-"""
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
+class Company(models.Model):
+    name = models.CharField(max_length=200)
+    addresss = models.CharField(max_length=200)
+    email = models.EmailField()
+    tax_code = models.CharField(max_length=200)
 
+    def save(self, *args, **kwargs):
+        # Забезпечення того, що існує лише один інстанс
+        if not self.pk and Company.objects.exists():
+            raise ValidationError('There can be only one Company instance.')
+        return super(Company, self).save(*args, **kwargs)
+
+    def __str__(self):
+
+"""
 class Department(models.Model):
     name = models.CharField(max_length=200)
     parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
