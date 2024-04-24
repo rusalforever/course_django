@@ -2,17 +2,41 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
-
-class Department(models.Model):
+class Company(models.Model):
     name = models.CharField(max_length=200)
-    parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    addresss = models.CharField(max_length=200)
+    email = models.EmailField()
+    tax_code = models.CharField(max_length=200)
+    parent_company = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Забезпечення того, що існує лише один інстанс
+        if not self.pk and Company.objects.exists():
+            raise ValidationError('There can be only one Company instance.')
+        return super(Company, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
 
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=200)
+    company = models.ForeignKey('Company', on_delete=models.CASCADE)
+    parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('name', 'company')
+
+    def __str__(self):
+        return self.name
+
+
+
 class Position(models.Model):
     title = models.CharField(max_length=200)
+    job_description = models.CharField(max_length=1300)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
 
@@ -31,3 +55,4 @@ class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey('Position', on_delete=models.SET_NULL, null=True, blank=True)
+    phone_number = models.CharField(max_length=10)
