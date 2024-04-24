@@ -7,6 +7,7 @@ class Company(models.Model):
     addresss = models.CharField(max_length=200)
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
+    parent_company = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # Забезпечення того, що існує лише один інстанс
@@ -15,8 +16,11 @@ class Company(models.Model):
         return super(Company, self).save(*args, **kwargs)
 
     def __str__(self):
+        return self.name
 
-"""
+
+
+
 class Department(models.Model):
     name = models.CharField(max_length=200)
     parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
@@ -45,4 +49,3 @@ class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey('Position', on_delete=models.SET_NULL, null=True, blank=True)
-"""
