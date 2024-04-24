@@ -8,6 +8,7 @@ from hr.models import (
     Company,
 )
 
+
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('name', 'addresss', 'email', 'tax_code', 'parent_company',)
