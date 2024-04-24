@@ -23,7 +23,15 @@ class Company(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
+    company = models.ForeignKey('Company', on_delete=models.CASCADE)
     parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.is_department:
+            existing_department = Department.objects.filter(department=self.company, is_manager=True).exists()
+            if existing_department:
+                raise ValidationError(f"Department already exists in the {self.company.name} .")
+        super(Department, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
