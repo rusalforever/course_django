@@ -5,8 +5,12 @@ from hr.models import (
     Department,
     Employee,
     Position,
+    Company,
 )
 
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'addresss', 'email', 'tax_code', 'parent_company')
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
