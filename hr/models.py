@@ -25,17 +25,13 @@ class Department(models.Model):
     name = models.CharField(max_length=200)
     company = models.ForeignKey('Company', on_delete=models.CASCADE)
     parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
-    is_department = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        if self.is_department:
-            existing_department = Department.objects.filter(department=self.company, is_department=True).exists()
-            if existing_department:
-                raise ValidationError(f"Department already exists in the {self.company.name} .")
-        super(Department, self).save(*args, **kwargs)
+    class Meta:
+        unique_together = ('name', 'company')  # Унікальна комбінація імені та компанії
 
     def __str__(self):
         return self.name
+
 
 
 class Position(models.Model):
