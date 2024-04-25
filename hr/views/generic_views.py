@@ -11,6 +11,7 @@ from django.views.generic import (
 
 from hr.forms import EmployeeForm
 from hr.models import Employee
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 def user_is_superadmin(user) -> bool:
@@ -21,18 +22,24 @@ class EmployeeListView(ListView):
     model = Employee
     template_name = "employee_list.html"
     context_object_name = "employees"
+    paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         search = self.request.GET.get("search", "")
-
         if search:
-            queryset = queryset.filter(
-                Q(first_name__icontains=search)
-                | Q(last_name__icontains=search)
-                | Q(position__title__icontains=search),
-            )
-        return queryset
+            return Employee.objects.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(position__title__icontains=search) |
+                Q(email__icontains=search),
+            ).order_by("first_name")
+        else:
+            return Employee.objects.all().order_by("first_name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        return context
 
 
 class EmployeeCreateView(UserPassesTestMixin, CreateView):
@@ -43,6 +50,12 @@ class EmployeeCreateView(UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+
+class EmployeeDetailView(UserPassesTestMixin, DetailView):
+    model = Employee
+    template_name = "employee_detail.html"
+    context_object_name = "employee"
 
 
 class EmployeeUpdateView(UserPassesTestMixin, UpdateView):

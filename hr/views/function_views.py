@@ -24,7 +24,8 @@ def employee_list(request):
         employees = employees.filter(
             Q(first_name__icontains=search)
             | Q(last_name__icontains=search)
-            | Q(position__title__icontains=search),
+            | Q(position__title__icontains=search)
+            | Q(email__icontains=search),
         )
 
     for employee in employees:
@@ -44,6 +45,13 @@ def employee_create(request):
     else:
         form = EmployeeForm()
     return render(request, "employee_form.html", {"form": form})
+
+
+@user_passes_test(user_is_superadmin)
+def employee_detail(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    context = {"employee": employee}
+    return render(request, "employee_detail.html", context)
 
 
 @user_passes_test(user_is_superadmin)
