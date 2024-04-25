@@ -2,6 +2,10 @@
 
 {% block title %}Employee List{% endblock title %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
   <div class="row mb-3">
@@ -11,8 +15,10 @@
   </div>
   <form method="get">
     <div class="input-group mb-3">
-      <input type="text" class="form-control" placeholder="search" name="search" value="{{ request.GET.search }}">
-      <div class="input-group-append">
+        <label>
+            <input type="text" class="form-control" placeholder="search" name="search" value="{{ search_query }}">
+        </label>
+        <div class="input-group-append">
         <button class="btn btn-primary" type="submit">Filter</button>
       </div>
     </div>
@@ -30,7 +36,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for employee in employees %}
+      {% for employee in page_obj %}
       <tr>
         <td>{{ employee.username }}</td>
         <td>{{ employee.first_name }}</td>
@@ -47,5 +53,31 @@
       {% endfor %}
     </tbody>
   </table>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">&laquo;</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">&lsaquo;</a>
+      </li>
+    {% endif %}
+    {% for page in page_obj.paginator.page_range %}
+      <li class="page-item{% if page_obj.number == page %} active{% endif %}">
+        <a class="page-link" href="?page={{ page }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ page }}</a>
+      </li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">&rsaquo;</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">&raquo;</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
 </div>
 {% endblock %}
