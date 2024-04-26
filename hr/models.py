@@ -73,3 +73,4 @@ class MonthlySalary(models.Model):
     salary = models.IntegerField()
     bonus = models.IntegerField(null=True, blank=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    paid = models.BooleanField(default=False)
