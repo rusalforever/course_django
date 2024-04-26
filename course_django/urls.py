@@ -24,8 +24,6 @@ from django.urls import (
 urlpatterns = [
     path("", include("hr.urls")),
     path("hr_super_secret_admin/", admin.site.urls),
-
     # Examples
-    path('examples/', include('examples.urls'))
-
+    path("examples/", include("examples.urls")),
 ]
