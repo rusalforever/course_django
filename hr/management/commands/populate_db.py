@@ -44,7 +44,8 @@ class Command(BaseCommand):
                 password=password,
                 hire_date=fake.date_between(start_date='-5y', end_date='today'),
                 birth_date=fake.date_of_birth(minimum_age=18, maximum_age=65),
-                position=random.choice(positions)
+                position=random.choice(positions),
+                phone_number=fake.phone_number()
             )
 
         self.stdout.write(self.style.SUCCESS('Data successfully generated!'))

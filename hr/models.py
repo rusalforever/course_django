@@ -37,6 +37,7 @@ class Position(models.Model):
 class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    phone_number = models.CharField(max_length=20, blank=False, null=False)
     position = models.ForeignKey(
         "Position", on_delete=models.SET_NULL, null=True, blank=True
     )
