@@ -5,6 +5,7 @@ from hr.models import Employee, Position, Department
 
 fake = Faker()
 
+
 class Command(BaseCommand):
     help = 'Generate random Department, Position, and Employee instances'
 
@@ -24,13 +25,12 @@ class Command(BaseCommand):
             )
             positions.append(position)
 
-        # Create a random position with is_manager=True
         hr_department = random.choice(departments)
         hr_position = Position.objects.create(
-            title='HR Manager',  # Adjust the title as needed
+            title='HR Manager',
             department=hr_department,
             is_active=True,
-            is_manager=True,  # Set is_manager to True
+            is_manager=True,
         )
         positions.append(hr_position)
 

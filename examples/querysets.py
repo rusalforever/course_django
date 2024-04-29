@@ -10,7 +10,6 @@ def querysets_homework(request):
     departments_with_managers = Department.objects.filter(position__is_manager=True).values('name').distinct()
     positions_sorted_by_title = Position.objects.order_by('title').values('title', 'is_active')
 
-    # Prepare data to pass to the template
     context = {
         'departments_with_manager_positions': departments_with_manager_positions,
         'total_active_positions': total_active_positions,
@@ -19,5 +18,4 @@ def querysets_homework(request):
         'positions_sorted_by_title': positions_sorted_by_title,
     }
 
-    # Render the template and pass the context
     return render(request, 'querysets.html', context)
