@@ -35,10 +35,8 @@ class Position(models.Model):
 
 
 class Employee(AbstractUser):
-   # username = models.CharField()
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    #department = models.ForeignKey("Department", on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)

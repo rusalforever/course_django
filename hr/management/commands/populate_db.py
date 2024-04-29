@@ -5,22 +5,36 @@ from hr.models import Employee, Position, Department
 
 fake = Faker()
 
-
 class Command(BaseCommand):
-    help = 'Generate random Employee, Position and Department instances'
+    help = 'Generate random Department, Position, and Employee instances'
 
     def handle(self, *args, **kwargs):
         departments = []
-        for i in range(5):
+        for _ in range(5):
             department = Department.objects.create(name=fake.unique.company())
             departments.append(department)
 
         positions = []
-        for j in range(10):
-            position = Position.objects.create(title=fake.job(), department=department)
+        for _ in range(10):
+            department = random.choice(departments)
+            position = Position.objects.create(
+                title=fake.job(),
+                department=department,
+                is_active=True,
+            )
             positions.append(position)
 
-        for e in range(100):
+        # Create a random position with is_manager=True
+        hr_department = random.choice(departments)
+        hr_position = Position.objects.create(
+            title='HR Manager',  # Adjust the title as needed
+            department=hr_department,
+            is_active=True,
+            is_manager=True,  # Set is_manager to True
+        )
+        positions.append(hr_position)
+
+        for _ in range(100):
             first_name = fake.first_name()
             last_name = fake.last_name()
             username = fake.unique.user_name()
@@ -36,4 +50,5 @@ class Command(BaseCommand):
                 birth_date=fake.date_of_birth(minimum_age=18, maximum_age=65),
                 position=random.choice(positions)
             )
+
         self.stdout.write(self.style.SUCCESS('Data successfully generated!'))
