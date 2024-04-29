@@ -35,8 +35,15 @@ class Position(models.Model):
 
 
 class Employee(AbstractUser):
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    is_manager = models.BooleanField(default=False)
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    id_number = models.CharField(max_length=200, null=True, blank=True)
     position = models.ForeignKey(
         "Position", on_delete=models.SET_NULL, null=True, blank=True
     )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
