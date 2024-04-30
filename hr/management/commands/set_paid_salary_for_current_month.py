@@ -26,3 +26,6 @@ class Command(BaseCommand):
                 f'Successfully set "paid" to True for {salaries.count()} MonthlySalary instances for the current month',
             ),
         )
+
+
+
