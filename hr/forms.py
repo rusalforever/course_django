@@ -1,12 +1,12 @@
 import calendar
 from datetime import date
 
+from django.core.exceptions import ValidationError
 from django import forms
 from django.forms import ChoiceField
 
 from common.enums import WorkDayEnum
 from hr.models import Employee
-
 
 WorkDayChoices = [(tag.name, tag.value) for tag in WorkDayEnum]
 
@@ -42,3 +42,19 @@ class SalaryForm(forms.Form):
                     choices=WorkDayChoices,
                     initial=WorkDayEnum.WORKING_DAY.name,
                 )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        employee = cleaned_data.get('employee')
+        if not employee:
+            raise forms.ValidationError("The 'Employee' field must be filled out!")
+
+        today = date.today()
+        _, num_days = calendar.monthrange(today.year, today.month)
+
+        sick_leave_days = sum(1 for day in range(1, num_days + 1) if cleaned_data.get(f'day_{day}') == 'SICK_DAY')
+        holiday_days = sum(1 for day in range(1, num_days + 1) if cleaned_data.get(f'day_{day}') == 'HOLIDAY')
+        if sick_leave_days > 5:
+            raise ValidationError("The number of sick leave days cannot exceed 5!")
+        if holiday_days > 3:
+            raise ValidationError("The number of holiday days cannot exceed 3!")
