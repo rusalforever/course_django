@@ -14,14 +14,14 @@ class Company(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk and Company.objects.exists():
-            raise ValidationError("There can be only one Company instance")
+            raise ValidationError('There can be only one Company instance')
         return super(Company, self).save(*args, **kwargs)
 
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
     parent_department = models.ForeignKey(
-        "self", on_delete=models.SET_NULL, null=True, blank=True
+        'self', on_delete=models.SET_NULL, null=True, blank=True,
     )
 
     def __str__(self):
@@ -30,10 +30,10 @@ class Department(models.Model):
 
 class Position(models.Model):
     title = models.CharField(max_length=200)
-    department = models.ForeignKey("Department", on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    job_description = models.CharField(max_length=500, default="")
+    job_description = models.CharField(max_length=500, default='')
     monthly_rate = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
@@ -48,7 +48,7 @@ class Position(models.Model):
             )
             if existing_manager:
                 raise ValidationError(
-                    f"Manager already exists in the {self.department.name} department."
+                    f'Manager already exists in the {self.department.name} department.',
                 )
         super(Position, self).save(*args, **kwargs)
 
@@ -60,9 +60,9 @@ class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey(
-        "Position", on_delete=models.SET_NULL, null=True, blank=True
+        'Position', on_delete=models.SET_NULL, null=True, blank=True,
     )
-    phone_number = models.CharField(max_length=151, default="")
+    phone_number = models.CharField(max_length=151, default='')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} - {self.position or ""}'
