@@ -50,7 +50,7 @@
         <h2>Positions Sorted by Title:</h2>
         <ul>
             {% for position in positions_sorted_by_title %}
-                <li>{{ position.title }} - Active: {{ position.is_active }}</li>
+                <li>{{ position.title }} - Active: {{ position.is_active }} - Monthly Rate: {{ position.monthly_rate }}</li>
             {% endfor %}
         </ul>
     </div>

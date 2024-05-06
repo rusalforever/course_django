@@ -17,6 +17,7 @@
         <th>Last Name</th>
         <th>Email</th>
         <th>Position</th>
+        <th>Monthly Rate</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -27,6 +28,7 @@
         <td>{{ employee.last_name }}</td>
         <td>{{ employee.email }}</td>
         <td>{{ employee.position.title }}</td>
+        <td>{{ employee.monthly_rate }}</td>
         <td>
           {% if request.user.is_superuser %}
           <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-danger">Delete</a>

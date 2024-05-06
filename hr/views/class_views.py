@@ -21,18 +21,18 @@ class EmployeeListView(View):
     @staticmethod
     def get(request):
         search = request.GET.get("search", "")
-        employees = Employee.objects.all()
+        employees_test = Employee.objects.all()
 
         if search:
-            employees = employees.filter(
+            employees_test = employees_test.filter(
                 Q(first_name__icontains=search)
                 | Q(last_name__icontains=search)
                 | Q(position__title__icontains=search)
                 | Q(email__icontains=search)
             )
 
-        context = {"employees": employees}
-        return render(request, "employee_list.html", context)
+        context = {"employees_test": employees_test}
+        return render(request, "employees.html", context)
 
 
 class EmployeeCreateView(UserPassesTestMixin, View):
@@ -46,7 +46,7 @@ class EmployeeCreateView(UserPassesTestMixin, View):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employee_list"))
+            return redirect(reverse("employees"))
         return render(request, "employee_form.html", {"form": form})
 
     def test_func(self):
@@ -66,7 +66,7 @@ class EmployeeUpdateView(UserPassesTestMixin, View):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employee_list"))
+            return redirect(reverse("employees"))
         return render(request, "employee_form.html", {"form": form})
 
     def test_func(self):
@@ -83,7 +83,7 @@ class EmployeeDeleteView(UserPassesTestMixin, View):
     def post(request, pk):
         employee = get_object_or_404(Employee, pk=pk)
         employee.delete()
-        return redirect(reverse("employee_list"))
+        return redirect(reverse("employees"))
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
@@ -104,8 +104,10 @@ class EmployeeDetailView(DetailView):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employee_list"))
+            return redirect(reverse("employees"))
         return render(request, "employee_detail.html", {"form": form})
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+
