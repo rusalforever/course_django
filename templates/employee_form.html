@@ -60,7 +60,15 @@
                 </div>
             {% endif %}
         </div>
-
+     <div class="form-group">
+            <label for="{{ form.monthly_rate.id_for_label }}">Monthly Rate:</label>
+            <input type="text" class="form-control" id="{{ form.monthly_rate.id_for_label }}" name="{{ form.monthly_rate.name }}" value="{{ form.monthly_rate.value|default:'' }}">
+            {% if form.monthly_rate.errors %}
+                <div class="text-danger">
+                    {{ form.monthly_rate.errors.0 }}
+                </div>
+           {% endif %}
+        </div>
         <div class="form-group mt-3">
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
