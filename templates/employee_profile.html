@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Profile{% endblock title %}
+  <link rel="icon" type="image/x-icon" href="/hr/images/icon.ico">
+
+
+{% block content %}
+{% load static %}
+
+<div class="container mt-5">
+    <div>
+        <div>
+            <h1 style="text-align:center;">Employee Profile</h1>
+            <hr>
+        </div>
+
+        <div>
+
+    <img src="{% static 'image.jpg' %}" style="float: right; margin-left: 20px;" width="200px" alt="Photo">
+        </div>
+
+        <div>
+            <strong>Username:</strong> {{ employee.username|default:'' }}
+        </div>
+        
+        <div>
+            <strong>First Name:</strong> {{ employee.first_name|default:'' }}
+        </div>
+        
+        <div>
+            <strong>Last Name:</strong> {{ employee.last_name|default:'' }}
+        </div>
+        
+        <div>
+            <strong>Email:</strong> {{ employee.email|default:'' }}
+        </div>
+        
+         <div>
+            <strong>Position:</strong> {{ employee.position|default:'' }}
+        </div>
+        
+        <div>
+            <strong>Birth date:</strong> {{ employee.birth_date|default:'' }}
+        </div>
+    
+        <div>
+            <strong>Hire date:</strong> {{ employee.hire_date|default:'' }}
+        </div>
+        
+        <div>
+          {% if request.user.is_superuser %}
+              <a href="{% url 'employee_update' employee.pk %}" class="btn btn-primary">Update</a>
+              <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-danger">Delete</a>
+          {% endif %}
+        </div>
+            
+    </div>
+
+
+{% endblock %}

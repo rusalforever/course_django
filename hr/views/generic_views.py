@@ -11,7 +11,7 @@ from django.views.generic import (
 
 from hr.forms import EmployeeForm
 from hr.models import Employee
-
+from django.core.paginator import Paginator
 
 def user_is_superadmin(user) -> bool:
     return user.is_superuser
@@ -25,12 +25,12 @@ class EmployeeListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         search = self.request.GET.get("search", "")
-
         if search:
             queryset = queryset.filter(
                 Q(first_name__icontains=search)
                 | Q(last_name__icontains=search)
-                | Q(position__title__icontains=search),
+                | Q(position__title__icontains=search)
+                | Q(email__icontains=search)
             )
         return queryset
 
