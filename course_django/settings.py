@@ -83,6 +83,8 @@ LANGUAGE_CODE = "en-us"
 
 LOCALE_PATHS = (BASE_DIR / "locale",)
 
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
 WSGI_APPLICATION = "course_django.wsgi.application"
 
 # Database
