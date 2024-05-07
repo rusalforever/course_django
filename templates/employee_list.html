@@ -3,6 +3,7 @@
 {% block title %}Employee List{% endblock title %}
 
 {% block content %}
+
 <div class="container mt-4">
   <div class="row mb-3">
     <div class="col-md-12">
@@ -32,7 +33,9 @@
     <tbody>
       {% for employee in employees %}
       <tr>
-        <td>{{ employee.username }}</td>
+        <td>
+            <a href="{% url 'employee_profile' employee.pk %}" >{{ employee.username }}</a>
+            </td>
         <td>{{ employee.first_name }}</td>
         <td>{{ employee.last_name }}</td>
         <td>{{ employee.email }}</td>
@@ -47,5 +50,25 @@
       {% endfor %}
     </tbody>
   </table>
+
+<div class="pagination">
+    <span class="step-links">
+        <span class="current">
+            Page {{ employees.number }} of {{ employees.paginator.num_pages }}.
+        </span>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            {% if employees.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ employees.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            {% if employees.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ employees.next_page_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ employees.paginator.num_pages }}">Last</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+    </span>
+</div>
 </div>
 {% endblock %}

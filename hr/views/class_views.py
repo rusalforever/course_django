@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import (
     get_object_or_404,
     redirect,
     render,
 )
+from django.views.generic import ListView
 from django.urls import reverse
 from django.views import View
 
@@ -19,15 +21,18 @@ def user_is_superadmin(user) -> bool:
 class EmployeeListView(View):
     def get(self, request):
         search = request.GET.get("search", "")
+        page = request.GET.get("page", 1)
         employees = Employee.objects.all()
 
         if search:
             employees = employees.filter(
                 Q(first_name__icontains=search)
                 | Q(last_name__icontains=search)
-                | Q(position__title__icontains=search),
+                | Q(position__title__icontains=search)
+                | Q(email__icontains=search)
             )
-
+        paginator = Paginator(employees, 10)
+        employees = paginator.get_page(page)
         context = {"employees": employees}
         return render(request, "employee_list.html", context)
 
@@ -78,3 +83,22 @@ class EmployeeDeleteView(UserPassesTestMixin, View):
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+
+class EmployeeProfile(View):
+
+    def get(self, request, pk):
+        employee = get_object_or_404(Employee, pk=pk)
+        return render(request, "employee_profile.html", {"employee": employee})
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     search = self.request.GET.get("search", "")
+    #Ï
+    #     if search:
+    #         queryset = queryset.filter(
+    #             Q(first_name__icontains=search)
+    #             | Q(last_name__icontains=search)
+    #             | Q(position__title__icontains=search),
+    #         )
+    #     return queryset
