@@ -25,13 +25,12 @@ from django.urls import (
 from general.views import HomeViev
 
 
-urlpatterns = [
-]
+urlpatterns = []
 
 urlpatterns += i18n_patterns(
-    path('', HomeViev.as_view(), name='home'),
-    path('hr/', include(('hr.urls', 'hr'), namespace='hr')),
-    path('hr_super_secret_admin/', admin.site.urls),
-    path('examples/', include('examples.urls')),
-    path('i18n/', include('django.conf.urls.i18n')),
+    path("", HomeViev.as_view(), name="home"),
+    path("hr/", include(("hr.urls", "hr"), namespace="hr")),
+    path("hr_super_secret_admin/", admin.site.urls),
+    path("examples/", include("examples.urls")),
+    path("i18n/", include("django.conf.urls.i18n")),
 )

@@ -21,5 +21,3 @@ class Message(models.Model):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
-
-
