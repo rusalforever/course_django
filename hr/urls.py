@@ -2,6 +2,7 @@ from django.urls import path
 
 # from hr.views import generic_views as views
 from hr.views import class_views as views
+from hr.views import homework_querysets
 
 urlpatterns = [
     path("employees/", views.EmployeeListView.as_view(), name="employee_list"),
@@ -17,6 +18,34 @@ urlpatterns = [
         "employees/delete/<int:pk>/",
         views.EmployeeDeleteView.as_view(),
         name="employee_delete",
+    ),
+    path(
+        "employees/departments_with_managers/",
+        homework_querysets.departments_with_managers,
+        name="homework_querysets",
+    ),
+    path(
+        "employees/active_positions/",
+        homework_querysets.active_positions,
+        name="active_positions",
+    ),
+
+    path(
+        "employees/active_positions_or_hr/",
+        homework_querysets.active_positions_or_hr,
+        name="active_positions_or_hr",
+    ),
+
+    path(
+        "departments_with_manager/",
+        homework_querysets.departments_with_manager,
+        name="departments_with_manager",
+    ),
+
+    path(
+        "all_sorted_departments/",
+        homework_querysets.all_sorted_departments,
+        name="all_sorted_departments",
     ),
 ]
 
