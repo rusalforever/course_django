@@ -40,7 +40,7 @@ def employee_create(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('employee_list'))
+            return redirect(reverse('hr:employee_list'))
     else:
         form = EmployeeForm()
     return render(request, 'employee_form.html', {'form': form})
@@ -53,7 +53,7 @@ def employee_update(request, pk):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect(reverse('employee_list'))
+            return redirect(reverse('hr:employee_list'))
     else:
         form = EmployeeForm(instance=employee)
     return render(request, 'employee_form.html', {'form': form})
@@ -64,5 +64,5 @@ def employee_delete(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == 'POST':
         employee.delete()
-        return redirect(reverse('employee_list'))
+        return redirect(reverse('hr:employee_list'))
     return render(request, 'employee_confirm_delete.html', {'object': employee})
