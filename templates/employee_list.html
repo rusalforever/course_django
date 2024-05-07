@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load cache %}
 
 {% block title %}Employee List{% endblock title %}
 
@@ -12,9 +13,9 @@
             <div class="col-md-4">
                 <a href="{% url 'hr:salary_calculator' %}" class="btn btn-info">{% trans 'Salary Calculator' %}</a>
             </div>
-{#            <div class="col-md-4">#}
-{#                <a href="{% url 'querysets_examples' %}" class="btn btn-success">QuerySet</a>#}
-{#            </div>#}
+            {#            <div class="col-md-4">#}
+            {#                <a href="{% url 'querysets_examples' %}" class="btn btn-success">QuerySet</a>#}
+            {#            </div>#}
         </div>
         <form method="get">
             <div class="input-group mb-3">
@@ -37,21 +38,26 @@
             </tr>
             </thead>
             <tbody>
-            {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.first_name }}</td>
-                    <td>{{ employee.last_name }}</td>
-                    <td>{{ employee.email }}</td>
-                    <td>{{ employee.position.title }}</td>
-                    <td>
-                        {% if request.user.is_superuser %}
-                            <a href="{% url 'hr:employee_update' employee.pk %}" class="btn btn-primary">{% trans 'Update' %} </a>
-                            <a href="{% url 'hr:employee_delete' employee.pk %}" class="btn btn-danger">{% trans 'Delete' %}</a>
-                            <a href="{% url 'hr:employee_profile' employee.pk %}" class="btn btn-success">{% trans 'View' %}</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
+            {% cache 300 employee_list %}
+                {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.first_name }}</td>
+                        <td>{{ employee.last_name }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.position.title }}</td>
+                        <td>
+                            {% if request.user.is_superuser %}
+                                <a href="{% url 'hr:employee_update' employee.pk %}"
+                                   class="btn btn-primary">{% trans 'Update' %} </a>
+                                <a href="{% url 'hr:employee_delete' employee.pk %}"
+                                   class="btn btn-danger">{% trans 'Delete' %}</a>
+                                <a href="{% url 'hr:employee_profile' employee.pk %}"
+                                   class="btn btn-success">{% trans 'View' %}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endcache %}
             </tbody>
         </table>
         <div class="pagination">

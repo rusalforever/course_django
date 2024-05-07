@@ -1,10 +1,10 @@
 from django.urls import path
 
 from hr.views import generic_views as views
-
+from django.views.decorators.cache import cache_page
 
 urlpatterns = [
-    path("employees/", views.EmployeeListView.as_view(), name="employee_list"),
+    path("employees/", cache_page(60 * 5)(views.EmployeeListView.as_view()), name="employee_list"),
     path(
         "employees/create/",
         views.EmployeeCreateView.as_view(),

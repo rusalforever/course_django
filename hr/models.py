@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-
+from django.utils.functional import cached_property
+from django.core.cache import cache
 # from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _
 
@@ -14,6 +15,10 @@ class Company(models.Model):
 
     def __str(self):
         return self.name
+
+    @cached_property
+    def position_count(self):
+        return self.position_set.filter(is_active=True).count()
 
     def save(self, *args, **kwargs):
         if not self.pk and Company.objects.exists():
@@ -57,9 +62,15 @@ class Position(models.Model):
                     f"Manager already exists in the {self.department.name} department.",
                 )
         super(Position, self).save(*args, **kwargs)
+        cache.delete(f'employee_{self.pk}')
 
-    def __str__(self):
-        return self.title
+    def delete(self, *args, **kwargs):
+        cache.delete(f'employee_{self.pk}')
+        super().delete(*args, **kwargs)
+
+
+def __str__(self):
+    return self.title
 
 
 class Employee(AbstractUser):
