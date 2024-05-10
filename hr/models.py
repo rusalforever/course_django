@@ -1,15 +1,15 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.cache import cache, caches
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
-
+from django.core.cache import cache, caches
 # from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _
 
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='logos/', null=True, blank=True)
     address = models.CharField(max_length=200)
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
@@ -23,14 +23,14 @@ class Company(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk and Company.objects.exists():
-            raise ValidationError('There can be only one Company instance')
+            raise ValidationError("There can be only one Company instance")
         return super(Company, self).save(*args, **kwargs)
 
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
     parent_department = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -41,11 +41,11 @@ class Department(models.Model):
 
 
 class Position(models.Model):
-    title = models.CharField(verbose_name=_('Title'), max_length=200)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name=_("Title"), max_length=200)
+    department = models.ForeignKey("Department", on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    job_description = models.CharField(verbose_name=_('Job Description'), max_length=500, default='')
+    job_description = models.CharField(verbose_name=_("Job Description"), max_length=500, default="")
     monthly_rate = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
@@ -60,7 +60,7 @@ class Position(models.Model):
             )
             if existing_manager:
                 raise ValidationError(
-                    f'Manager already exists in the {self.department.name} department.',
+                    f"Manager already exists in the {self.department.name} department.",
                 )
         super(Position, self).save(*args, **kwargs)
 
@@ -72,12 +72,12 @@ class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey(
-        'Position',
+        "Position",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    phone_number = models.CharField(max_length=151, default='')
+    phone_number = models.CharField(max_length=151, default="")
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     cv = models.FileField(upload_to='cvs/', null=True, blank=True, help_text='PDF, DOC, or DOCX')
 
