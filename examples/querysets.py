@@ -19,27 +19,27 @@ def querysets_examples(request):
     non_manager_positions = Position.objects.exclude(is_manager=True)
 
     departments_with_positions_count = Department.objects.annotate(
-        num_positions=Count("position"),
+        num_positions=Count('position'),
     )
 
     total_active_positions = Position.objects.filter(is_active=True).aggregate(
-        num_active=Count("id"),
+        num_active=Count('id'),
     )
 
-    positions_by_title = Position.objects.order_by("title")
+    positions_by_title = Position.objects.order_by('title')
 
-    distinct_departments = Department.objects.values("name").distinct()
+    distinct_departments = Department.objects.values('name').distinct()
 
-    values = Position.objects.values("title", "is_manager")
-    values_list = Position.objects.values_list("title", "is_manager")
+    values = Position.objects.values('title', 'is_manager')
+    values_list = Position.objects.values_list('title', 'is_manager')
 
     extra_positions = Position.objects.extra(
-        select={"is_new": "is_manager = False AND is_active = True"},
+        select={'is_new': 'is_manager = False AND is_active = True'},
     )
     is_new = extra_positions[0].is_new
 
-    deferred = Position.objects.defer("job_description")
-    only_title = Position.objects.only("title")
+    deferred = Position.objects.defer('job_description')
+    only_title = Position.objects.only('title')
 
     # OR (|)
     and_positions = Position.objects.filter(Q(is_active=True) | Q(is_manager=False))
@@ -53,10 +53,10 @@ def querysets_examples(request):
     get_position = Position.objects.get(id=first_position.id)
 
     created = Department.objects.create(
-        name="New Departmnet",
+        name='New Departmnet',
     )
 
-    department, created = Department.objects.get_or_create(name="HR")
+    department, created = Department.objects.get_or_create(name='HR')
 
     count_positions = Position.objects.count()
 
@@ -72,16 +72,16 @@ def querysets_examples(request):
     Position.objects.iterator()
     # Lookups
     department = Department.objects.first()
-    positions_starting_with_d = Position.objects.filter(title__startswith="D")
-    positions_containing_manager = Position.objects.filter(title__icontains="teac")
+    positions_starting_with_d = Position.objects.filter(title__startswith='D')
+    positions_containing_manager = Position.objects.filter(title__icontains='teac')
     positions_in_date_range = Position.objects.filter(
-        department__name__range=("A", "Z"),
+        department__name__range=('A', 'Z'),
     )
 
     # JOINs в Django (INNER JOIN приклад)
-    inner_joined = Position.objects.select_related("department")
+    inner_joined = Position.objects.select_related('department')
 
     # JOINs в Django (LEFT OUTER JOIN приклад)
-    left_joined = Department.objects.prefetch_related("positions").distinct()
+    left_joined = Department.objects.prefetch_related('positions').distinct()
 
     return HttpResponse()

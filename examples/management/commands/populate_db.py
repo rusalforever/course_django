@@ -10,7 +10,7 @@ fake = Faker()
 
 
 class Command(BaseCommand):
-    help = "Generate random Department, Position, and Employee instances"
+    help = 'Generate random Department, Position, and Employee instances'
 
     def handle(self, *args, **kwargs):
         # Generate Departments
@@ -35,17 +35,17 @@ class Command(BaseCommand):
             first_name = fake.first_name()
             last_name = fake.last_name()
             username = fake.unique.user_name()
-            email = username + "@example.com"
-            password = "password123"  # You might want to generate random passwords here
+            email = username + '@example.com'
+            password = 'password123'  # You might want to generate random passwords here
             employee = Employee.objects.create_user(
                 username=username,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
                 password=password,
-                hire_date=fake.date_between(start_date="-5y", end_date="today"),
+                hire_date=fake.date_between(start_date='-5y', end_date='today'),
                 birth_date=fake.date_of_birth(minimum_age=18, maximum_age=65),
                 position=random.choice(positions),
             )
 
-        self.stdout.write(self.style.SUCCESS("Data successfully generated!"))
+        self.stdout.write(self.style.SUCCESS('Data successfully generated!'))

@@ -7,11 +7,11 @@ from chat.models import Message, Thread
 from hr.models import Employee as User
 
 
-fake = Faker("uk_UA")
+fake = Faker('uk_UA')
 
 
 class Command(BaseCommand):
-    help = "Populate database with test data"
+    help = 'Populate database with test data'
 
     def handle(self, *args, **kwargs):
         self.create_fake_threads_and_messages(

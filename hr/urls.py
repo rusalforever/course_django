@@ -1,33 +1,35 @@
 from django.urls import path
-
-from hr.views import generic_views as views
 from django.views.decorators.cache import cache_page
 
+from hr.views import generic_views as views
+
+
 urlpatterns = [
-    path("employees/", cache_page(60 * 5)(views.EmployeeListView.as_view()), name="employee_list"),
+    path('employees/', cache_page(60, cache='my_key', key_prefix='employee_list')(views.EmployeeListView.as_view()),
+         name='employee_list'),
     path(
-        "employees/create/",
+        'employees/create/',
         views.EmployeeCreateView.as_view(),
-        name="employee_create",
+        name='employee_create',
     ),
     path(
-        "employees/update/<int:pk>/",
+        'employees/update/<int:pk>/',
         views.EmployeeUpdateView.as_view(),
-        name="employee_update",
+        name='employee_update',
     ),
     path(
-        "employees/delete/<int:pk>/",
+        'employees/delete/<int:pk>/',
         views.EmployeeDeleteView.as_view(),
-        name="employee_delete",
+        name='employee_delete',
     ),
     path(
-        "employees/profile/<int:pk>/",
+        'employees/profile/<int:pk>/',
         views.EmployeeProfileView.as_view(),
-        name="employee_profile",
+        name='employee_profile',
     ),
     path(
-        "salary-calculator/",
+        'salary-calculator/',
         views.SalaryCalculatorView.as_view(),
-        name="salary_calculator",
+        name='salary_calculator',
     ),
 ]

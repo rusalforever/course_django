@@ -11,12 +11,12 @@ from hr.models import (
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ("name", "parent_department")
+    list_display = ('name', 'parent_department')
 
 
 @admin.register(Position)
 class PositionAdmin(TranslationAdmin):
-    list_display = ("id", "title", "department", "is_manager")
+    list_display = ('id', 'title', 'department', 'is_manager')
 
     def save_model(self, request, obj, form, change):
         try:
@@ -28,4 +28,4 @@ class PositionAdmin(TranslationAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ("username", "position", "hire_date")
+    list_display = ('username', 'position', 'hire_date')
