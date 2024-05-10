@@ -1,6 +1,7 @@
 import datetime
 
 from django.core.cache import cache
+from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
@@ -46,6 +47,15 @@ class EmployeeCreateView(UserIsAdminMixin, CreateView):
     form_class = EmployeeForm
     template_name = 'employee_form.html'
     success_url = reverse_lazy('hr:employee_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Працівника успішно створено.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Виникла помилка при створенні працівника.')
+        return super().form_invalid(form)
 
 
 class EmployeeUpdateView(UserIsAdminMixin, UpdateView):
