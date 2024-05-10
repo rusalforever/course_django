@@ -26,7 +26,6 @@ from django.urls import (
 
 from general.views import HomeViev
 
-
 urlpatterns = []
 
 urlpatterns += i18n_patterns(
@@ -34,5 +33,9 @@ urlpatterns += i18n_patterns(
     path('hr/', include(('hr.urls', 'hr'), namespace='hr')),
     path('hr_super_secret_admin/', admin.site.urls),
     path('examples/', include('examples.urls')),
+    path(
+        'accounts/',
+        include(('accounts.urls', 'accounts'), namespace='accounts')
+    ),
     path('i18n/', include('django.conf.urls.i18n')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
