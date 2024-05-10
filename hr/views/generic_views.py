@@ -24,7 +24,7 @@ from hr.mixins import UserIsAdminMixin
 from hr.models import Employee
 
 
-class EmployeeListView(LoginRequiredMixin,ListView):
+class EmployeeListView(LoginRequiredMixin, ListView):
     model = Employee
     template_name = 'employee_list.html'
     context_object_name = 'employees'
