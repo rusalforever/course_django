@@ -26,6 +26,7 @@ urlpatterns = [
     path("hr_super_secret_admin/", admin.site.urls),
 
     # Examples
-    path('examples/', include('examples.urls'))
+    path('examples/', include('examples.urls')),
+    path('queryset/', include('hr.management_comands.urls'))
 
 ]

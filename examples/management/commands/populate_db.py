@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Generate Departments
         departments = []
-        for _ in range(5):
+        for _ in range(4):
             department = Department.objects.create(name=fake.unique.company())
             departments.append(department)
 
@@ -29,8 +29,8 @@ class Command(BaseCommand):
             )
             positions.append(position)
 
-        # Generate Employees
-        for _ in range(100):
+        # # Generate Employees
+        for _ in range(10):
             first_name = fake.first_name()
             last_name = fake.last_name()
             username = fake.unique.user_name()
