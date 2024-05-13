@@ -31,7 +31,7 @@ class EmployeeListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search = self.request.GET.get("search", "")
+        search = self.request.GET.get('search', '')
 
         if search:
             queryset = queryset.filter(
@@ -46,30 +46,30 @@ class EmployeeListView(ListView):
 class EmployeeCreateView(UserIsAdminMixin, CreateView):
     model = Employee
     form_class = EmployeeForm
-    template_name = "employee_form.html"
-    success_url = reverse_lazy("employee_list")
+    template_name = 'employee_form.html'
+    success_url = reverse_lazy('hr:employee_list')
 
 
 class EmployeeUpdateView(UserIsAdminMixin, UpdateView):
     model = Employee
     form_class = EmployeeForm
-    template_name = "employee_form.html"
-    success_url = reverse_lazy("employee_list")
+    template_name = 'employee_form.html'
+    success_url = reverse_lazy('hr:employee_list')
 
 
 class EmployeeDeleteView(UserIsAdminMixin, DeleteView):
     model = Employee
-    template_name = "employee_confirm_delete.html"
-    success_url = reverse_lazy("employee_list")
+    template_name = 'employee_confirm_delete.html'
+    success_url = reverse_lazy('hr:employee_list')
 
 
 class EmployeeProfileView(UserIsAdminMixin, DetailView):
     model = Employee
-    template_name = "employee_profile.html"
+    template_name = 'employee_profile.html'
 
 
 class SalaryCalculatorView(UserIsAdminMixin, FormView):
-    template_name = "salary_calculator.html"
+    template_name = 'salary_calculator.html'
     form_class = SalaryForm
 
     def get(self, request, *args, **kwargs):
@@ -78,6 +78,8 @@ class SalaryCalculatorView(UserIsAdminMixin, FormView):
 
     def form_valid(self, form):
         employee = form.cleaned_data.get("employee")
+        cleaned_data = form.cleaned_data
+        employee = cleaned_data.get('employee')
 
         calculator = CalculateMonthRateSalary(employee=employee)
         days = {

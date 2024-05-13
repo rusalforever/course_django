@@ -37,14 +37,14 @@ def employees(request):
 
 @user_passes_test(user_is_superadmin)
 def employee_create(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employees"))
+            return redirect(reverse("hr:employees"))
     else:
         form = EmployeeForm()
-    return render(request, "employee_form.html", {"form": form})
+    return render(request, 'employee_form.html', {'form': form})
 
 
 @user_passes_test(user_is_superadmin)
@@ -57,20 +57,20 @@ def employee_detail(request, pk):
 @user_passes_test(user_is_superadmin)
 def employee_update(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
-    if request.method == "POST":
+    if request.method == 'POST':
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employees"))
+            return redirect(reverse("hr:employees"))
     else:
         form = EmployeeForm(instance=employee)
-    return render(request, "employee_form.html", {"form": form})
+    return render(request, 'employee_form.html', {'form': form})
 
 
 @user_passes_test(user_is_superadmin)
 def employee_delete(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
-    if request.method == "POST":
+    if request.method == 'POST':
         employee.delete()
-        return redirect(reverse("employees"))
+        return redirect(reverse("hr:employees"))
     return render(request, "employee_confirm_delete.html", {"object": employee})

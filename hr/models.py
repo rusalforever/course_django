@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
+# from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
@@ -20,18 +23,20 @@ class Company(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
-    parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    parent_department = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, null=True, blank=True,
+    )
 
     def __str__(self):
         return self.name
 
 
 class Position(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(verbose_name=_('Title'), max_length=200)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    job_description = models.CharField(max_length=500, default='')
+    job_description = models.CharField(verbose_name=_('Job Description'), max_length=500, default='')
     monthly_rate = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
@@ -63,3 +68,4 @@ class MonthlySalary(models.Model):
     bonus = models.IntegerField(null=True, blank=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
+    paid_date = models.DateField()
