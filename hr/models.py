@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -23,9 +25,7 @@ class Company(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
-    parent_department = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, null=True, blank=True,
-    )
+    parent_department = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
