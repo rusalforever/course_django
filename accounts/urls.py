@@ -3,6 +3,7 @@ from django.urls import path
 
 from accounts.views import LoginView, PasswordResetConfirmView, PasswordResetView
 
+
 urlpatterns = [
     path(
         'login/',
