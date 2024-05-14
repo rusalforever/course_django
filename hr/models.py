@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -63,3 +65,5 @@ class MonthlySalary(models.Model):
     bonus = models.IntegerField(null=True, blank=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
+    paid_date = models.DateField(default=timezone.now)
+
