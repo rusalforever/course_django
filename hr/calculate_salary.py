@@ -5,6 +5,8 @@ from math import ceil
 
 from common.enums import WorkDayEnum
 from hr.models import Employee, MonthlySalary
+from django.utils import timezone
+
 
 
 logger = logging.getLogger(__name__)
@@ -95,6 +97,8 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
 
     def save_salary(self, salary: int, date: datetime.date):
         month_date = date.replace(day=1)
+        paid_date = timezone.now().date()
+
         try:
             MonthlySalary.objects.get(
                 month_year=month_date, employee=self.employee, paid=True,
@@ -103,7 +107,7 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
             MonthlySalary.objects.update_or_create(
                 month_year=month_date,
                 employee=self.employee,
-                defaults={'salary': salary, 'paid': False},
+                defaults={'salary': salary, 'paid': False, 'paid_date': paid_date},
             )
             logger.info(
                 msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} created.',

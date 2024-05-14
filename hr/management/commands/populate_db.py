@@ -18,23 +18,23 @@ class Command(BaseCommand):
         positions = []
         for _ in range(10):
             department = random.choice(departments)
-            monthly_rate = random.randint(10000, 30000)  # Generating random monthly rate
+            monthly_rate = random.randint(10000, 30000)
             position = Position.objects.create(
                 title=fake.job(),
                 department=department,
-                is_active=True,
-                monthly_rate=monthly_rate,  # Setting monthly rate
+                is_active=random.choice([True, False]),
+                monthly_rate=monthly_rate,
             )
             positions.append(position)
 
         hr_department = random.choice(departments)
-        hr_monthly_rate = random.randint(10000, 30000)  # Generating random monthly rate for HR Manager
+        hr_monthly_rate = random.randint(10000, 30000)
         hr_position = Position.objects.create(
             title='HR Manager',
             department=hr_department,
-            is_active=True,
+            is_active=random.choice([True, False]),
             is_manager=True,
-            monthly_rate=hr_monthly_rate,  # Setting monthly rate for HR Manager
+            monthly_rate=hr_monthly_rate,
         )
         positions.append(hr_position)
 

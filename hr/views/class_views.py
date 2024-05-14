@@ -45,7 +45,7 @@ class EmployeeCreateView(UserPassesTestMixin, View):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employee_list"))
+            return redirect(reverse("hr:employees"))
         return render(request, "employee_form.html", {"form": form})
 
     def test_func(self):
@@ -82,7 +82,7 @@ class EmployeeDeleteView(UserPassesTestMixin, View):
     def post(request, pk):
         employee = get_object_or_404(Employee, pk=pk)
         employee.delete()
-        return redirect(reverse("employees"))
+        return redirect(reverse("hr:employees"))
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
