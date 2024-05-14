@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    RESPONSE
+{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Departments with Manager Positions:</h2>
+        <ul>
+            {% for department in departments_with_manager_positions %}
+                <li>{{ department.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Total Active Positions:</h2>
+        <p>{{ total_active_positions }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Active Positions or HR Department:</h2>
+        <ul>
+            {% for position in positions_active_or_hr %}
+                <li>{{ position.title }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Departments with Managers:</h2>
+        <ul>
+            {% for department in departments_with_managers %}
+                <li>{{ department.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Positions Sorted by Title:</h2>
+        <ul>
+            {% for position in positions_sorted_by_title %}
+                <li>{{ position.title }} - Active: {{ position.is_active }} - Monthly Rate: {{ position.monthly_rate }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock content %}

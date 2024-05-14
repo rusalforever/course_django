@@ -11,14 +11,12 @@ class Command(BaseCommand):
         current_month = timezone.now().month
         current_year = timezone.now().year
 
-        # Filter the MonthlySalary instances by current month and year
         salaries = MonthlySalary.objects.filter(
             month_year__month=current_month,
             month_year__year=current_year,
             paid=False,
         )
 
-        # Update the "paid" field for the filtered instances
         salaries.update(paid=True)
 
         self.stdout.write(

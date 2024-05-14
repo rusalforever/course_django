@@ -7,6 +7,7 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views import View
+from django.views.generic import DetailView
 
 from hr.forms import EmployeeForm
 from hr.models import Employee
@@ -17,31 +18,35 @@ def user_is_superadmin(user) -> bool:
 
 
 class EmployeeListView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         search = request.GET.get("search", "")
-        employees = Employee.objects.all()
+        employees_test = Employee.objects.all()
 
         if search:
-            employees = employees.filter(
+            employees_test = employees_test.filter(
                 Q(first_name__icontains=search)
                 | Q(last_name__icontains=search)
-                | Q(position__title__icontains=search),
+                | Q(position__title__icontains=search)
+                | Q(email__icontains=search)
             )
 
-        context = {"employees": employees}
-        return render(request, "employee_list.html", context)
+        context = {"employees_test": employees_test}
+        return render(request, "employees.html", context)
 
 
 class EmployeeCreateView(UserPassesTestMixin, View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         form = EmployeeForm()
         return render(request, "employee_form.html", {"form": form})
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employee_list"))
+            return redirect(reverse("employees"))
         return render(request, "employee_form.html", {"form": form})
 
     def test_func(self):
@@ -49,17 +54,19 @@ class EmployeeCreateView(UserPassesTestMixin, View):
 
 
 class EmployeeUpdateView(UserPassesTestMixin, View):
-    def get(self, request, pk):
+    @staticmethod
+    def get(request, pk):
         employee = get_object_or_404(Employee, pk=pk)
         form = EmployeeForm(instance=employee)
         return render(request, "employee_form.html", {"form": form})
 
-    def post(self, request, pk):
+    @staticmethod
+    def post(request, pk):
         employee = get_object_or_404(Employee, pk=pk)
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect(reverse("employee_list"))
+            return redirect(reverse("employees"))
         return render(request, "employee_form.html", {"form": form})
 
     def test_func(self):
@@ -67,14 +74,40 @@ class EmployeeUpdateView(UserPassesTestMixin, View):
 
 
 class EmployeeDeleteView(UserPassesTestMixin, View):
-    def get(self, request, pk):
+    @staticmethod
+    def get(request, pk):
         employee = get_object_or_404(Employee, pk=pk)
         return render(request, "employee_confirm_delete.html", {"object": employee})
 
-    def post(self, request, pk):
+    @staticmethod
+    def post(request, pk):
         employee = get_object_or_404(Employee, pk=pk)
         employee.delete()
-        return redirect(reverse("employee_list"))
+        return redirect(reverse("employees"))
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+
+class EmployeeDetailView(DetailView):
+    model = Employee
+    template_name = 'employee_detail.html'
+    context_object_name = 'employee'
+
+    @staticmethod
+    def get_info(request):
+        form = EmployeeForm()
+        return render(request, "employee_detail.html", {"form": form})
+
+    @staticmethod
+    def post_info(request):
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("employees"))
+        return render(request, "employee_detail.html", {"form": form})
+
+    def test_func(self):
+        return user_is_superadmin(self.request.user)
+
+
