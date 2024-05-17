@@ -1,4 +1,3 @@
-
 from django.db.models import Q
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -74,6 +73,9 @@ class SalaryCalculatorView(UserIsAdminMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        selected_employee_id = self.request.POST.get('employee')
+        if selected_employee_id:
+            context['selected_employee'] = Employee.objects.get(pk=selected_employee_id)
         return context
 
     def form_valid(self, form):
@@ -87,10 +89,14 @@ class SalaryCalculatorView(UserIsAdminMixin, FormView):
         salary = calculator.calculate_salary(days_dict=days)
 
         return render(
-            request=self.request,
-            template_name=self.template_name,
+            self.request,
+            self.template_name,
             context={
                 'form': form,
                 'calculated_salary': salary,
+                'selected_employee': employee,
             },
         )
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
