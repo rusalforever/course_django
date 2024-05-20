@@ -83,6 +83,7 @@ class Employee(AbstractUser):
     )
     phone_number = models.CharField(max_length=151, default="")
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+
     #cv = models.FileField(upload_to='cvs/', null=True, blank=True, help_text='PDF, DOC, or DOCX')
 
     def __str__(self):
