@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load cache %}
+
 {% block content %}
   <h1>Salary calculator</h1>
 
@@ -29,9 +31,7 @@
           <option value="{{ choice.0 }}" {% if form.employee.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
         {% endfor %}
       </select>
-
-      <!-- Відображення помилок для поля "employee" -->
-      {% if form.employee.errors %}
+        {% if form.employee.errors %}
         <div class="text-danger">
           {% for error in form.employee.errors %}
             <p>{{ error }}</p>
@@ -41,20 +41,22 @@
     </div>
 
     <div class="row">
-      {% for field in form %}
-        {% if forloop.counter > 1 %}
-          <div class="col-2">
-            <div class="form-group">
-              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-              <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">
-                {% for choice in field.field.choices %}
-                  <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                {% endfor %}
-              </select>
+      {% cache 120 form %}
+        {% for field in form %}
+          {% if forloop.counter > 1 %}
+            <div class="col-2">
+              <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">
+                  {% for choice in field.field.choices %}
+                    <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-          </div>
-        {% endif %}
-      {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% endcache %}
     </div>
 
     <div class="form-group mt-4">

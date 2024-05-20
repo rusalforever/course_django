@@ -1,5 +1,8 @@
 import datetime
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from django.core.cache import cache
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -75,6 +78,10 @@ class EmployeeDeleteView(UserIsAdminMixin, DeleteView):
 class EmployeeProfileView(UserIsAdminMixin, DetailView):
     model = Employee
     template_name = 'employee_profile.html'
+
+    @method_decorator(cache_page(180))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get_object(self):
         employee_id = self.kwargs.get('pk')

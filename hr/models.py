@@ -48,6 +48,10 @@ class Position(models.Model):
     job_description = models.CharField(verbose_name=_("Job Description"), max_length=500, default="")
     monthly_rate = models.IntegerField(default=0)
 
+    @cached_property
+    def total_count(self):
+        return Position.objects.count()
+
     def save(self, *args, **kwargs):
         if self.is_manager:
             existing_manager = (
@@ -108,4 +112,4 @@ class MonthlySalary(models.Model):
     bonus = models.IntegerField(null=True, blank=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
-    paid_date = models.DateField()
+    #paid_date = models.DateField()
