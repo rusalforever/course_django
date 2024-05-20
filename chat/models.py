@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-# from django.contrib.auth.models import User
 from hr.models import Employee as User
 
 
@@ -22,5 +21,3 @@ class Message(models.Model):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
-
-

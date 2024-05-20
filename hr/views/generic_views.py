@@ -1,8 +1,10 @@
 import datetime
 
+from django.core.cache import cache
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -13,7 +15,6 @@ from django.views.generic import (
     UpdateView,
 )
 
-from common.enums import WorkDayEnum
 from hr.calculate_salary import CalculateMonthRateSalary
 from hr.forms import (
     EmployeeForm,
@@ -23,15 +24,14 @@ from hr.mixins import UserIsAdminMixin
 from hr.models import Employee
 
 
-class EmployeeListView(ListView):
+class EmployeeListView(LoginRequiredMixin, ListView):
     model = Employee
-    template_name = "employees.html"
-    context_object_name = "employees"
-    paginate_by = 10
+    template_name = 'employee_list.html'
+    context_object_name = 'employees'
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search = self.request.GET.get("search", "")
+        search = self.request.GET.get('search', '')
 
         if search:
             queryset = queryset.filter(
@@ -46,69 +46,76 @@ class EmployeeListView(ListView):
 class EmployeeCreateView(UserIsAdminMixin, CreateView):
     model = Employee
     form_class = EmployeeForm
-    template_name = "employee_form.html"
-    success_url = reverse_lazy("employee_list")
+    template_name = 'employee_form.html'
+    success_url = reverse_lazy('hr:employee_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Працівника успішно створено.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Виникла помилка при створенні працівника.')
+        return super().form_invalid(form)
 
 
 class EmployeeUpdateView(UserIsAdminMixin, UpdateView):
     model = Employee
     form_class = EmployeeForm
-    template_name = "employee_form.html"
-    success_url = reverse_lazy("employee_list")
+    template_name = 'employee_form.html'
+    success_url = reverse_lazy('hr:employee_list')
 
 
 class EmployeeDeleteView(UserIsAdminMixin, DeleteView):
     model = Employee
-    template_name = "employee_confirm_delete.html"
-    success_url = reverse_lazy("employee_list")
+    template_name = 'employee_confirm_delete.html'
+    success_url = reverse_lazy('hr:employee_list')
 
 
 class EmployeeProfileView(UserIsAdminMixin, DetailView):
     model = Employee
-    template_name = "employee_profile.html"
+    template_name = 'employee_profile.html'
+
+    def get_object(self):
+        employee_id = self.kwargs.get('pk')
+        employee = cache.get(f'employee_{employee_id}')
+
+        if not employee:
+            employee = get_object_or_404(Employee, pk=employee_id)
+            cache.set(f'employee_{employee_id}', employee, timeout=5 * 60)
+
+        return employee
 
 
 class SalaryCalculatorView(UserIsAdminMixin, FormView):
-    template_name = "salary_calculator.html"
+    template_name = 'salary_calculator.html'
     form_class = SalaryForm
 
     def get(self, request, *args, **kwargs):
-        form = self.get_form()
-        return self.render_to_response(self.get_context_data(form=form))
+        form = SalaryForm()
+        return render(request, self.template_name, {'form': form})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
     def form_valid(self, form):
-        employee = form.cleaned_data.get("employee")
+        cleaned_data = form.cleaned_data
+        employee = cleaned_data.get('employee')
 
         calculator = CalculateMonthRateSalary(employee=employee)
-        days = {
-            day: day_type
-            for day, day_type in form.cleaned_data.items()
-            if day.startswith(calculator.day_prefix)
-        }
 
-        sick_days = sum(1 for day, day_type in days.items() if day_type == WorkDayEnum.SICK_DAY.name)
-        if sick_days > 5:
-            form.errors["sick_days"] = ["The number of sick days can't be more than 5"]
-            return self.form_invalid(form)
-
-        holiday_days = sum(1 for day, day_type in days.items() if day_type == WorkDayEnum.HOLIDAY.name)
-        if holiday_days > 3:
-            form.errors["holiday_days"] = ["The number of holiday days can't be more than 3"]
-            return self.form_invalid(form)
+        days = {day: day_type for day, day_type in cleaned_data.items() if day.startswith(calculator.day_prefix)}
 
         salary = calculator.calculate_salary(days_dict=days)
+
         calculator.save_salary(salary=salary, date=datetime.date.today())
-        employee_name = f'{employee.first_name}{employee.last_name}'
 
         return render(
             request=self.request,
             template_name=self.template_name,
             context={
-                "form": form,
-                "calculated_salary": salary,
-                "employee_name": employee_name,
+                'form': form,
+                'calculated_salary': salary,
             },
         )
-
-    def form_invalid(self, form):
-        return super().form_invalid(form)

@@ -3,6 +3,7 @@
 {% block content %}
   <h1>Salary calculator</h1>
 
+  <!-- Відображення помилок на рівні форми -->
   {% if form.non_field_errors %}
     <div class="alert alert-danger mt-4" role="alert">
       {% for error in form.non_field_errors %}
@@ -11,19 +12,9 @@
     </div>
   {% endif %}
 
-  {% if form.errors %}
-    <div class="alert alert-danger mt-4" role="alert">
-      {% for field, errors in form.errors.items %}
-        {% for error in errors %}
-          <p>{{ error }}</p>
-        {% endfor %}
-      {% endfor %}
-    </div>
-  {% endif %}
-
   {% if calculated_salary %}
     <div class="alert alert-success mt-4" role="alert">
-      <h4 class="alert-heading">Calculated Salary for {{ employee_name }}</h4>
+      <h4 class="alert-heading">Calculated Salary</h4>
       <p>{{ calculated_salary }}</p>
     </div>
   {% endif %}
@@ -38,7 +29,9 @@
           <option value="{{ choice.0 }}" {% if form.employee.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
         {% endfor %}
       </select>
-        {% if form.employee.errors %}
+
+      <!-- Відображення помилок для поля "employee" -->
+      {% if form.employee.errors %}
         <div class="text-danger">
           {% for error in form.employee.errors %}
             <p>{{ error }}</p>
@@ -58,13 +51,6 @@
                   <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
                 {% endfor %}
               </select>
-              {% if field.errors %}
-                <div class="text-danger">
-                  {% for error in field.errors %}
-                    <p>{{ error }}</p>
-                  {% endfor %}
-                </div>
-              {% endif %}
             </div>
           </div>
         {% endif %}

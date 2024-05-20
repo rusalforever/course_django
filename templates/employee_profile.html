@@ -6,6 +6,18 @@
         <ul class="list-group">
             <li class="list-group-item d-flex">
                 <div class="mr-15">
+                    Avatar :
+                </div>
+                <img src="{{ employee.avatar.url }}" alt="Avatar" width=100>
+            </li>
+{#            <li class="list-group-item d-flex">#}
+{#                <div class="mr-15">#}
+{#                    CV :#}
+{#                </div>#}
+{#                <a href="{{ employee.cv.url }}">Download CV</a>#}
+{#            </li>#}
+            <li class="list-group-item d-flex">
+                <div class="mr-15">
                     Username :
                 </div>
                 <div>{{ object.username }}</div>
@@ -53,12 +65,6 @@
                 </div>
                 <div>{{ object.position }}</div>
             </li>
-             <li class="list-group-item d-flex">
-                <div class="mr-15">
-                    Monthly Rate :
-                </div>
-                <div>{{ object.position.monthly_rate }}</div>
-            </li>
             <li class="list-group-item d-flex">
                 <div class="mr-15">
                     Position department :
@@ -92,8 +98,8 @@
             </li>
             <li class="pt-10">
                 {% if request.user.is_superuser %}
-                    <a href="{% url 'employee_update' employee.pk %}" class="btn btn-primary">Update</a>
-                    <a href="{% url 'employee_delete' employee.pk %}" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'hr:employee_update' employee.pk %}" class="btn btn-primary">Update</a>
+                    <a href="{% url 'hr:employee_delete' employee.pk %}" class="btn btn-danger">Delete</a>
                 {% endif %}
             </li>
         </ul>
