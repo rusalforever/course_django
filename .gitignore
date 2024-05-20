@@ -13,7 +13,6 @@ __pycache__/
 *.pot
 *.egg-info
 db.sqlite3
-media/
 
 # Virtual environment
 venv/
