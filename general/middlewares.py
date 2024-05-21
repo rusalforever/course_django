@@ -4,7 +4,6 @@ from django.utils.deprecation import MiddlewareMixin
 
 from general.models import RequestStatistics
 
-
 logger = logging.getLogger("middlewares")
 
 
@@ -28,3 +27,11 @@ class RequestStatisticsMiddleware(MiddlewareMixin):
 
             stats.requests += 1
             stats.save()
+
+    def process_exception(self, request, exception):
+        try:
+            stats, created = RequestStatistics.objects.get_or_create(id=1)
+            stats.exceptions += 1
+            stats.save()
+        except Exception as e:
+            print(f"Error updating RequestStatistics: {e}")
