@@ -49,6 +49,16 @@ files = [
 python-dateutil = ">=2.4"
 
 [[package]]
+name = "hrt"
+version = "0.1.0"
+description = "Translates raw HTTP requests to Python,Ruby,Php and Bash scripts"
+optional = false
+python-versions = "*"
+files = [
+    {file = "hrt-0.1.0.tar.gz", hash = "sha256:cf6ec31fe73efd3530a4a98127bd447de0ef742b34da55cb49677faa3f774789"},
+]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
@@ -103,4 +113,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "40f0981ac6a87cc2d7103edefc924f87c613e509f48b7a13017398a48aeac2c7"
+content-hash = "00c03782e5a92bd38d65d9bff868770a2495dafd3da655d55872d115aad97bc9"

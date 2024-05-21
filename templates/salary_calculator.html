@@ -3,7 +3,6 @@
 {% block content %}
   <h1>Salary calculator</h1>
 
-  <!-- Відображення помилок на рівні форми -->
   {% if form.non_field_errors %}
     <div class="alert alert-danger mt-4" role="alert">
       {% for error in form.non_field_errors %}
@@ -26,11 +25,10 @@
       <label for="{{ form.employee.id_for_label }}" class="form-label">{{ form.employee.label }}</label>
       <select name="{{ form.employee.name }}" id="{{ form.employee.id_for_label }}" class="form-control">
         {% for choice in form.employee.field.choices %}
-          <option value="{{ choice.0 }}" {% if form.employee.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+          <option value="{{ choice.0 }}" {% if selected_employee and selected_employee.pk == choice.0 %}selected{% elif form.employee.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
         {% endfor %}
       </select>
 
-      <!-- Відображення помилок для поля "employee" -->
       {% if form.employee.errors %}
         <div class="text-danger">
           {% for error in form.employee.errors %}
