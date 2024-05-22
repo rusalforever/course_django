@@ -1,5 +1,6 @@
 import logging
 
+from django.http import Http404, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 
 from general.models import RequestStatistics
@@ -28,3 +29,9 @@ class RequestStatisticsMiddleware(MiddlewareMixin):
 
             stats.requests += 1
             stats.save()
+
+    def process_exception(self, request, exception):
+        stats, _ = RequestStatistics.objects.get_or_create(user=request.user)
+        stats.exception += 1
+        stats.save()
+        return HttpResponse(f"Exception encountered: exception = {exception}, count = {stats.exception}")
