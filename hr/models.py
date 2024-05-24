@@ -3,8 +3,6 @@ from django.core.cache import cache, caches
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
-
-# from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _
 
 
@@ -14,7 +12,7 @@ class Company(models.Model):
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
 
-    def __str(self):
+    def __str__(self):
         return self.name
 
     @cached_property
@@ -39,10 +37,14 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def employees(self):
+        return self.employee_set.all()
+
 
 class Position(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=200)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     job_description = models.CharField(verbose_name=_('Job Description'), max_length=500, default='')
@@ -72,11 +74,16 @@ class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey(
-        'Position',
+        Position,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
+    department = models.ForeignKey(Department,
+                                   on_delete=models.CASCADE,
+                                   null=True, blank=True,
+                                   related_name='employees')
+
     phone_number = models.CharField(max_length=151, default='')
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     cv = models.FileField(upload_to='cvs/', null=True, blank=True, help_text='PDF, DOC, or DOCX')
@@ -87,15 +94,8 @@ class Employee(AbstractUser):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        print(caches['my_key']._cache.keys())
-        print(cache._cache.keys())
-
-        caches['my_key'].clear()
-        print(caches['my_key']._cache.keys())
-        # On Redis
-        # cache.delete_pattern("patern_*")
-
         cache.delete(f'employee_{self.id}')
+        cache.clear()
 
     def delete(self, *args, **kwargs):
         cache.delete(f'employee_{self.pk}')
