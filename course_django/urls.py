@@ -33,7 +33,8 @@ from general.views import HomeViev
 
 
 urlpatterns = [
-    path('api/hr/', include(('hr.api_urls', 'hr'), namespace='api-hr')),
+    path('hr/', include(('hr.urls', 'hr'), namespace='hr')),
+    path('api/hr/', include(('hr.api_urls', 'api-hr'), namespace='api-hr')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -42,7 +43,6 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', HomeViev.as_view(), name='home'),
-    path('hr/', include(('hr.urls', 'hr'), namespace='hr')),
     path('hr_super_secret_admin/', admin.site.urls),
     path('examples/', include('examples.urls')),
     path(
