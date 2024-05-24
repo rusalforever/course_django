@@ -1,17 +1,17 @@
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 from modeltranslation.admin import TranslationAdmin
+from pydantic import ValidationError
 
-from hr.models import (
-    Department,
-    Employee,
-    Position,
-)
+from hr.models import Department, Employee, Position
 
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent_department')
+    list_display = ('name', 'parent_department', 'employee_count')
+
+    def employee_count(self, obj):
+        return obj.employees.count()
+    employee_count.short_description = 'Number of Employees'
 
 
 @admin.register(Position)
@@ -28,4 +28,5 @@ class PositionAdmin(TranslationAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('username', 'position', 'hire_date')
+    list_display = ('username', 'position', 'hire_date', 'department')
+    search_fields = ('username', 'position__title', 'department__name')
