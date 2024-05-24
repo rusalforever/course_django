@@ -15,6 +15,9 @@ pydantic = "^2.7.1"
 djangorestframework = "^3.15.1"
 drf-yasg = "^1.21.7"
 djangorestframework-simplejwt = "^5.3.1"
+coverage = "^7.5.1"
+factory-boy = "^3.3.0"
+setuptools = "^70.0.0"
 
 
 [build-system]
@@ -41,6 +44,8 @@ ignore = [
     "D413",
     "F722",
     "B904",
+    "Q000",
+    "Q003",
     "F841", #  Only for course examples!!!
 ]
 select = [
@@ -74,3 +79,20 @@ split-on-trailing-comma = true
 force-wrap-aliases = true
 combine-as-imports = true
 lines-after-imports = 2
+
+
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/settings.py",
+    "*/urls.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+]
+
+[tool.coverage.report]
+fail_under = 50
+show_missing = true
+skip_covered = true
+

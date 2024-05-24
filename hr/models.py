@@ -86,15 +86,7 @@ class Employee(AbstractUser):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-
-        print(caches['my_key']._cache.keys())
-        print(cache._cache.keys())
-
         caches['my_key'].clear()
-        print(caches['my_key']._cache.keys())
-        # On Redis
-        # cache.delete_pattern("patern_*")
-
         cache.delete(f'employee_{self.id}')
 
     def delete(self, *args, **kwargs):
