@@ -4,7 +4,7 @@ from hr.models import (
     Employee,
     Position,
 )
-from hr.validators import validate_positive
+from hr.validators import validate_positive, holiday_days, vacation_days
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -21,10 +21,10 @@ class PositionSerializer(serializers.ModelSerializer):
 
 class SalarySerializer(serializers.Serializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
-    working_days = serializers.IntegerField(validators=[validate_positive])
-    holiday_days = serializers.IntegerField()
+    working_days = serializers.IntegerField(max_value=31)
+    holiday_days = serializers.IntegerField(validators=[holiday_days])
     sick_days = serializers.IntegerField(default=0, max_value=4)
-    vacation_days = serializers.IntegerField(default=0)
+    vacation_days = serializers.IntegerField(validators=[vacation_days])
 
     def validate(self, data):
         total_days = sum([
