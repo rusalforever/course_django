@@ -93,3 +93,85 @@ class EmployeeCreateViewTest(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), 'Працівника успішно створено.')
 
+
+class EmployeeProfileViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.non_admin_user = EmployeeFactory(is_staff=False, is_superuser=False)
+        self.employee = EmployeeFactory()
+        self.position = PositionFactory()
+        self.url = reverse('hr:employee_profile', kwargs={'pk': self.employee.pk})
+
+    def test_access_employee_profile(self):
+        self.client.force_login(self.admin_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_employee_profile(self):
+        self.client.force_login(self.admin_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.context['employee'], self.employee)
+        self.assertTemplateUsed(response, 'employee_profile.html')
+
+
+class EmployeeDeleteViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.non_admin_user = EmployeeFactory(is_staff=False, is_superuser=False)
+        self.employee_to_delete = EmployeeFactory()
+        self.client.force_login(self.admin_user)
+        self.url = reverse('hr:employee_delete', kwargs={'pk': self.employee_to_delete.pk})
+
+    def test_delete_employee_by_admin(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Employee.objects.filter(pk=self.employee_to_delete.pk).exists())
+
+    def test_delete_employee_by_non_admin(self):
+        self.client.force_login(self.non_admin_user)
+        response = self.client.post(self.url)
+        self.assertNotEqual(response.status_code, 302)
+        self.assertTrue(Employee.objects.filter(pk=self.employee_to_delete.pk).exists())
+
+
+class EmployeeUpdateViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.non_admin_user = EmployeeFactory(is_staff=False, is_superuser=False)
+        self.employee = EmployeeFactory()
+        self.position = PositionFactory()
+        self.url = reverse('hr:employee_update', kwargs={'pk': self.employee.pk})
+
+    def test_successful_employee_update_by_admin(self):
+        self.client.force_login(self.admin_user)
+        username = 'updateuser'
+        employee_data = {
+            'username': username,
+            'first_name': 'updated',
+            'last_name': 'update',
+            'email': 'update@example.com',
+            'position': self.position.id,
+        }
+        response = self.client.post(self.url, employee_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Employee.objects.filter(username=username).exists())
+        self.assertEqual(Employee.objects.get(username=username).first_name, 'updated')
+        self.assertEqual(Employee.objects.get(username=username).last_name, 'update')
+        self.assertEqual(Employee.objects.get(username=username).email, 'update@example.com')
+
+    def test_employee_update_by_non_admin(self):
+        self.client.force_login(self.non_admin_user)
+        employee_data = {
+            'username': 'nonadminuser',
+            'first_name': 'nonadmin',
+            'last_name': 'NonAdmin',
+            'email': 'nonadmin@example.com',
+            'position': self.position.id,
+        }
+        response = self.client.post(self.url, employee_data)
+        self.assertNotEqual(response.status_code, 302)
+        self.assertNotEqual(Employee.objects.get(pk=self.employee.pk).first_name, 'nonadmin')
+

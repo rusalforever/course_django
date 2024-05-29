@@ -5,10 +5,10 @@ from rest_framework.test import (
     APITestCase,
 )
 
-from hr.models import Employee
+from hr.models import Employee, Position
 from hr.tests.factories import (
     EmployeeFactory,
-    PositionFactory,
+    PositionFactory, DepartmentFactory,
 )
 
 
@@ -49,3 +49,48 @@ class EmployeeAPITestCase(APITestCase):
         response = self.client.get(reverse('api-hr:employee-list'), {'search': 'Test'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+
+class PositionViewSetTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.department = DepartmentFactory()
+        self.positions = PositionFactory.create_batch(10, department=self.department)
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_position_list(self):
+        response = self.client.get(reverse('api-hr:position-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_position(self):
+        data = {
+            'title': 'new_position',
+            'department': self.department.pk,
+            'is_manager': False,
+            'is_active': True,
+            'job_description': 'new position',
+            'monthly_rate': 10000
+        }
+        response = self.client.post(reverse('api-hr:position-list'), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Position.objects.count(), len(self.positions) + 1)
+
+    def test_update_position(self):
+        position = self.positions[0]
+        data = {'title': 'updated_position'}
+        response = self.client.patch(reverse('api-hr:position-detail', kwargs={'pk': position.pk}), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        position.refresh_from_db()
+        self.assertEqual(position.title, 'updated_position')
+
+    def test_retrieve_position(self):
+        position = self.positions[0]
+        response = self.client.get(reverse('api-hr:position-detail', kwargs={'pk': position.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['title'], position.title)
+
+    def test_delete_position(self):
+        position = self.positions[0]
+        response = self.client.delete(reverse('api-hr:position-detail', kwargs={'pk': position.pk}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Position.objects.filter(pk=position.pk).exists())
