@@ -12,6 +12,7 @@ class Company(models.Model):
     address = models.CharField(max_length=200)
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
+    company_logo = models.ImageField(upload_to='company_logo', blank=True, null=True)
 
     def __str(self):
         return self.name
@@ -46,6 +47,10 @@ class Position(models.Model):
     is_active = models.BooleanField(default=True)
     job_description = models.CharField(verbose_name=_("Job Description"), max_length=500, default="")
     monthly_rate = models.IntegerField(default=0)
+
+    @cached_property
+    def total_count(self):
+        return Position.objects.count()
 
     def save(self, *args, **kwargs):
         if self.is_manager:
