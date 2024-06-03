@@ -5,7 +5,7 @@ from modeltranslation.admin import TranslationAdmin
 from hr.models import (
     Department,
     Employee,
-    Position,
+    Position, Company,
 )
 
 
@@ -29,3 +29,6 @@ class PositionAdmin(TranslationAdmin):
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('username', 'position', 'hire_date')
+
+
+admin.site.register(Company)
