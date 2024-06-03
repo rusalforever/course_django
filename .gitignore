@@ -14,6 +14,7 @@ __pycache__/
 *.egg-info
 db.sqlite3
 media/
+staticfiles/
 
 # Virtual environment
 venv/
