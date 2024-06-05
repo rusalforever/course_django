@@ -12,6 +12,7 @@ class Company(models.Model):
     address = models.CharField(max_length=200)
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
+    logo = models.ImageField(upload_to='company_log/', null=True, blank=True)
 
     def __str(self):
         return self.name
@@ -63,6 +64,10 @@ class Position(models.Model):
                 )
         super(Position, self).save(*args, **kwargs)
 
+    @cached_property
+    def active_positions_count(self):
+        return Position.objects.filter(is_active=True).count()
+
     def __str__(self):
         return self.title
 
@@ -107,4 +112,4 @@ class MonthlySalary(models.Model):
     bonus = models.IntegerField(null=True, blank=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
-    paid_date = models.DateField()
+    paid_date = models.DateField(null=True, blank=True)

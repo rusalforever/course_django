@@ -6,6 +6,7 @@ from hr.models import (
     Department,
     Employee,
     Position,
+    Company,
 )
 
 
@@ -29,3 +30,8 @@ class PositionAdmin(TranslationAdmin):
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('username', 'position', 'hire_date')
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address', 'email', 'tax_code', 'logo')
