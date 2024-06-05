@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -65,6 +67,15 @@ class EmployeeUpdateView(UserIsAdminMixin, UpdateView):
     template_name = 'employee_form.html'
     success_url = reverse_lazy('hr:employee_list')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Працівника успішно оновлено.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Виникла помилка при оновленні працівника.')
+        return super().form_invalid(form)
+
 
 class EmployeeDeleteView(UserIsAdminMixin, DeleteView):
     model = Employee
@@ -75,6 +86,10 @@ class EmployeeDeleteView(UserIsAdminMixin, DeleteView):
 class EmployeeProfileView(UserIsAdminMixin, DetailView):
     model = Employee
     template_name = 'employee_profile.html'
+
+    @method_decorator(cache_page(180))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get_object(self):
         employee_id = self.kwargs.get('pk')
