@@ -1,5 +1,5 @@
 # Використовуємо офіційний образ Python
-FROM python:3.12
+FROM python:3.11
 
 # Встановлюємо poetry
 RUN pip install poetry
