@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -9,7 +10,7 @@ from django.urls import reverse
 from django.views import View
 
 from hr.forms import EmployeeForm
-from hr.models import Employee
+from hr.models import Employee, Department, Position
 
 
 def user_is_superadmin(user) -> bool:
@@ -78,3 +79,25 @@ class EmployeeDeleteView(UserPassesTestMixin, View):
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+
+def homework_querysets(request):
+    departments_with_managers = Department.objects.filter(position__is_manager=True).order_by('name').distinct()
+
+    total_active_positions = Position.objects.filter(is_active=True).count()
+
+    active_or_hr_positions = Position.objects.filter(Q(is_active=True) | Q(department__name="HR"))
+
+    departments_with_managers_names = Department.objects.filter(position__is_manager=True).values('name').distinct()
+
+    positions_sorted_by_name = Position.objects.order_by('title').values('title', 'is_active')
+
+    response_data = {
+        'departments_with_managers': list(departments_with_managers.values('name')),
+        'total_active_positions': total_active_positions,
+        'active_or_hr_positions': list(active_or_hr_positions.values('title', 'is_active')),
+        'departments_with_managers_names': list(departments_with_managers_names),
+        'positions_sorted_by_name': list(positions_sorted_by_name),
+    }
+
+    return JsonResponse(response_data)
