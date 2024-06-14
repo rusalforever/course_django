@@ -19,18 +19,28 @@ class PositionSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'department', 'is_manager', 'is_active', 'job_description', 'monthly_rate')
 
 
+def validate_holiday_days(value):
+    if value > 10:
+        raise serializers.ValidationError("Holiday days cannot exceed 10.")
+    return value
+
 class SalarySerializer(serializers.Serializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
-    working_days = serializers.IntegerField(validators=[validate_positive])
-    holiday_days = serializers.IntegerField()
+    working_days = serializers.IntegerField(max_value=31)
+    holiday_days = serializers.IntegerField(default=0, validators=[validate_holiday_days])
     sick_days = serializers.IntegerField(default=0, max_value=4)
     vacation_days = serializers.IntegerField(default=0)
+
+    def validate_vacation_days(self, value):
+        if value > 5:
+            raise serializers.ValidationError("Vacation days cannot exceed 5.")
+        return value
 
     def validate(self, data):
         total_days = sum([
             data.get('working_days', 0),
             data.get('holiday_days', 0),
-            data.get('sick_days',   0),
+            data.get('sick_days', 0),
             data.get('vacation_days', 0),
         ])
         if total_days > 31:
