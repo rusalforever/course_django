@@ -11,7 +11,7 @@ from hr.models import (
     Position,
 )
 from hr.pagination import SmallSetPagination
-from hr.permissions import IsNotRussianEmail
+from hr.permissions import IsNotRussianEmail, HasPositionPermission
 from hr.pydantic_models import WorkingDays
 from hr.serializers import (
     EmployeeSerializer,
@@ -27,7 +27,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all().order_by()
     serializer_class = EmployeeSerializer
     pagination_class = SmallSetPagination
-    permission_classes = [IsNotRussianEmail]
+    permission_classes = [HasPositionPermission]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -47,11 +47,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         count = Employee.objects.filter(position=employee.position).count()
         return Response({'position_count': count})
 
-
 class PositionViewSet(viewsets.ModelViewSet):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
-
 
 class SalaryCalculatorView(APIView):
     permission_classes = [IsAdminUser]
