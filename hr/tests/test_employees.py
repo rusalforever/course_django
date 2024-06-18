@@ -93,3 +93,58 @@ class EmployeeCreateViewTest(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), 'Працівника успішно створено.')
 
+
+class EmployeeProfileViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.employee = EmployeeFactory()
+        self.client.force_login(self.admin_user)
+        self.url = reverse('hr:employee_profile', args=[self.employee.id])
+
+    def test_access_employee_profile(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'employee_profile.html')
+        self.assertEqual(response.context['employee'], self.employee)
+
+
+class EmployeeDeleteViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.employee = EmployeeFactory()
+        self.url = reverse('hr:employee_delete', args=[self.employee.id])
+
+    def test_delete_employee(self):
+        self.client.force_login(self.admin_user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Employee.objects.filter(id=self.employee.id).exists())
+
+
+class EmployeeUpdateViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = EmployeeFactory(is_staff=True, is_superuser=True)
+        self.position = PositionFactory()
+        self.employee = EmployeeFactory(position=self.position)
+        self.url = reverse('hr:employee_update', args=[self.employee.id])
+
+    def test_update_employee(self):
+        self.client.force_login(self.admin_user)
+        updated_data = {
+            'username': 'updateduser',
+            'first_name': 'Updated',
+            'last_name': 'User',
+            'email': 'updated@example.com',
+            'position': self.position.id,
+        }
+        response = self.client.post(self.url, updated_data)
+        self.assertEqual(response.status_code, 302)
+        self.employee.refresh_from_db()
+        self.assertEqual(self.employee.username, 'updateduser')
+        self.assertEqual(self.employee.first_name, 'Updated')
+        self.assertEqual(self.employee.last_name, 'User')
+        self.assertEqual(self.employee.email, 'updated@example.com')
+

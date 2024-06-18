@@ -8,13 +8,21 @@
                 <div class="mr-15">
                     Avatar :
                 </div>
-                <img src="{{ employee.avatar.url }}" alt="Avatar" width=100>
+                {% if employee.avatar %}
+                    <img src="{{ employee.avatar.url }}" alt="Avatar">
+                {% else %}
+                    <img src="/staticfiles/img/company_logo.jpeg" alt="Default Avatar">
+                {% endif %}
             </li>
             <li class="list-group-item d-flex">
                 <div class="mr-15">
                     CV :
                 </div>
-                <a href="{{ employee.cv.url }}">Download CV</a>
+                {% if employee.cv %}
+                    <a href="{{ employee.cv.url }}">Download CV</a>
+                {% else %}
+                    <p>No CV available</p>
+                {% endif %}
             </li>
             <li class="list-group-item d-flex">
                 <div class="mr-15">
