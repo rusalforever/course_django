@@ -1,13 +1,13 @@
 from django.contrib import admin
 from .models import Employee, Company, Position
 
-# Custom admin actions
+# Спеціальні дії адміністратора
 def make_active(modeladmin, request, queryset):
     queryset.update(is_active=True)
 
 make_active.short_description = "Mark selected employees as active"
 
-# EmployeeAdmin class
+# Додати адміністративний клас співробітнтника
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone_number', 'position', 'department', 'is_active')
@@ -15,7 +15,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email')
     actions = [make_active]
 
-    # Custom form layout
+    # Форма макету
     fieldsets = (
         (None, {
             'fields': ('name', 'email', 'phone_number')
@@ -25,6 +25,6 @@ class EmployeeAdmin(admin.ModelAdmin):
         }),
     )
 
-# Register other models
+# Зареєструвати інші моделі
 admin.site.register(Company)
 admin.site.register(Position)

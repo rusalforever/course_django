@@ -21,10 +21,10 @@ class Company(models.Model):
 class Employee(models.Model):
     # ... existing fields ...
     phone_number = models.CharField(max_length=20)
-    # Add any additional configurations for the field if necessary
+    # Це модель саме 
 
 # Position Model
 class Position(models.Model):
     # ... existing fields ...
     job_description = models.TextField()
-    # Add any additional configurations for the field if necessary
+    # Це модель більше про позицію персоналу
