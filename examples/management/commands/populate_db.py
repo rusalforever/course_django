@@ -3,7 +3,6 @@ import random
 from faker import Faker
 from hr.models import Employee, Position, Department
 
-# fake = Faker("uk_UA")
 fake = Faker()
 
 
@@ -19,13 +18,18 @@ class Command(BaseCommand):
 
         # Generate Positions
         positions = []
+
+        def generate_monthly_rate():
+            return random.randint(2, 10) * 100
+
         for _ in range(10):
             department = random.choice(departments)
             position = Position.objects.create(
                 title=fake.job(),
                 department=department,
-                # is_manager=random.choice([True, False]),
-                is_active=True
+                is_manager=random.choice([True, False]),
+                is_active=True,
+                #monthly_rate=generate_monthly_rate()
             )
             positions.append(position)
 

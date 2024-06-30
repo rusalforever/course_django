@@ -3,6 +3,10 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
+class RequestStatistics(models.Model):
+    exception = models.IntegerField(default=0)
+
+
 class Company(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
@@ -32,7 +36,7 @@ class Position(models.Model):
     is_manager = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     job_description = models.CharField(max_length=500, default='')
-    monthly_rate = models.IntegerField(default=0)
+    monthly_rate = models.IntegerField(default=1000)
 
     def save(self, *args, **kwargs):
         if self.is_manager:
