@@ -1,36 +1,24 @@
+"""
+URL configuration for course_django project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+
 from django.urls import path
-from hr.views import class_views as views
-from hr.views.employee_edit_view import EmployeeEditView
-from hr.views.employee_info_views import EmployeeDetailView
-from hr.views.generic_views import EmployeeListView
+from .views import EmployeeListView, EmployeeProfileView
 
 urlpatterns = [
-    path("employees/", views.EmployeeListView.as_view(), name="employee_list"),
-    path(
-        "employees/create/", views.EmployeeCreateView.as_view(), name="employee_create"
-    ),
-    path(
-        "employees/update/<int:pk>/", views.EmployeeUpdateView.as_view(), name="employee_update",
-    ),
-    path(
-        "employee_list/delete/<int:pk>/", views.EmployeeDeleteView.as_view(), name="employee_delete",
-    ),
-    path('employee/<int:pk>/', EmployeeDetailView.as_view(), name='employee_detail'),
-    path('employee/<int:pk>/edit/', EmployeeEditView.as_view(), name='employee_edit'),
-    path("employee_list/", EmployeeListView.as_view(), name="employee_list")
+    path('employees/', EmployeeListView.as_view(), name='employee-list'),
+    path('employees/<int:pk>/', EmployeeProfileView.as_view(), name='employee-detail'),
 ]
-
-# from hr.views.function_views import (
-#     employee_create,
-#     employee_delete,
-#     employee_list,
-#     employee_update,
-# )
-#
-#
-# urlpatterns = [
-#     path('employees/', employee_list, name='employee_list'),
-#     path('employees/create/', employee_create, name='employee_create'),
-#     path('employees/update/<int:pk>/', employee_update, name='employee_update'),
-#     path('employees/delete/<int:pk>/', employee_delete, name='employee_delete'),
-# ]
