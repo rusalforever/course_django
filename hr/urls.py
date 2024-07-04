@@ -1,8 +1,8 @@
 from django.urls import path
+
+# from hr.views import generic_views as views
 from hr.views import class_views as views
-from hr.views.employee_edit_view import EmployeeEditView
-from hr.views.employee_info_views import EmployeeDetailView
-from hr.views.generic_views import EmployeeListView
+from hr.views import homework_querysets
 
 urlpatterns = [
     path("employees/", views.EmployeeListView.as_view(), name="employee_list"),
@@ -10,14 +10,43 @@ urlpatterns = [
         "employees/create/", views.EmployeeCreateView.as_view(), name="employee_create"
     ),
     path(
-        "employees/update/<int:pk>/", views.EmployeeUpdateView.as_view(), name="employee_update",
+        "employees/update/<int:pk>/",
+        views.EmployeeUpdateView.as_view(),
+        name="employee_update",
     ),
     path(
-        "employee_list/delete/<int:pk>/", views.EmployeeDeleteView.as_view(), name="employee_delete",
+        "employees/delete/<int:pk>/",
+        views.EmployeeDeleteView.as_view(),
+        name="employee_delete",
     ),
-    path('employee/<int:pk>/', EmployeeDetailView.as_view(), name='employee_detail'),
-    path('employee/<int:pk>/edit/', EmployeeEditView.as_view(), name='employee_edit'),
-    path("employee_list/", EmployeeListView.as_view(), name="employee_list")
+    path(
+        "employees/departments_with_managers/",
+        homework_querysets.departments_with_managers,
+        name="homework_querysets",
+    ),
+    path(
+        "employees/active_positions/",
+        homework_querysets.active_positions,
+        name="active_positions",
+    ),
+
+    path(
+        "employees/active_positions_or_hr/",
+        homework_querysets.active_positions_or_hr,
+        name="active_positions_or_hr",
+    ),
+
+    path(
+        "departments_with_manager/",
+        homework_querysets.departments_with_manager,
+        name="departments_with_manager",
+    ),
+
+    path(
+        "all_sorted_departments/",
+        homework_querysets.all_sorted_departments,
+        name="all_sorted_departments",
+    ),
 ]
 
 # from hr.views.function_views import (
