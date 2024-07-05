@@ -1,14 +1,16 @@
 from django.urls import path
 from hr.views import class_views as views
-from hr.views.function_views import query_results  # Import your new view
+from hr.views.function_views import query_results  # Import your existing view
+from hr.views.function_views import homework_querysets  # Import your new view
 
 urlpatterns = [
     path("employees/", views.EmployeeListView.as_view(), name="employee_list"),
     path("employees/create/", views.EmployeeCreateView.as_view(), name="employee_create"),
     path("employees/update/<int:pk>/", views.EmployeeUpdateView.as_view(), name="employee_update"),
     path("employees/delete/<int:pk>/", views.EmployeeDeleteView.as_view(), name="employee_delete"),
-    # Your new URL pattern for the query results view
     path("query-results/", query_results, name="query_results"),
+    # Add your new URL pattern for the homework_querysets view
+    path("homework-querysets/", homework_querysets, name="homework_querysets"),
 ]
 
 # from hr.views.function_views import (
