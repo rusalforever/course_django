@@ -71,6 +71,7 @@ def querysets_examples(request):
     inner_joined = Position.objects.select_related('department')
 
 
+
     # JOINs в Django (LEFT OUTER JOIN приклад)
     left_joined = Department.objects.prefetch_related('positions').distinct()
 
