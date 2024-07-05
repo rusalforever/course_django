@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import Department, Position
+from models import Department, Position
 
 def homework_querysets(request):
     # Query 1: Departments with manager positions, sorted alphabetically
