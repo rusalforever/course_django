@@ -4,9 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 from general.models import RequestStatistics
 
-
 logger = logging.getLogger("middlewares")
-
 
 class RequestStatisticsMiddleware(MiddlewareMixin):
     def __init__(self, get_response):
@@ -25,6 +23,13 @@ class RequestStatisticsMiddleware(MiddlewareMixin):
             "/hr_super_secret_admin/"
         ):
             stats, created = RequestStatistics.objects.get_or_create(user=request.user)
-
             stats.requests += 1
             stats.save()
+
+    def process_exception(self, request, exception):
+        """
+        Increment the exception count in the RequestStatistics model.
+        """
+        stats, created = RequestStatistics.objects.get_or_create(user=request.user)
+        stats.exceptions += 1
+        stats.save()
