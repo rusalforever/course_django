@@ -7,18 +7,17 @@ from django.forms import ChoiceField
 from common.enums import WorkDayEnum
 from hr.models import Employee
 
-
 WorkDayChoices = [(tag.name, tag.value) for tag in WorkDayEnum]
-
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = ('username', 'first_name', 'last_name', 'email', 'position')
 
-
 class SalaryForm(forms.Form):
     employee = forms.ModelChoiceField(queryset=Employee.objects.all())
+    sick_days = forms.IntegerField(required=False)
+    holiday_days = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(SalaryForm, self).__init__(*args, **kwargs)
@@ -42,3 +41,22 @@ class SalaryForm(forms.Form):
                     choices=WorkDayChoices,
                     initial=WorkDayEnum.WORKING_DAY.name,
                 )
+
+    def clean_employee(self):
+        employee = self.cleaned_data.get('employee')
+        if not employee:
+            raise forms.ValidationError("Employee field must be filled.")
+        return employee
+
+    def clean(self):
+        cleaned_data = super().clean()
+        sick_days = cleaned_data.get('sick_days')
+        holiday_days = cleaned_data.get('holiday_days')
+
+        if sick_days is not None and sick_days > 5:
+            raise forms.ValidationError("The number of sick days cannot exceed 5.")
+
+        if holiday_days is not None and holiday_days > 3:
+            raise forms.ValidationError("The number of holiday days cannot exceed 3.")
+
+        return cleaned_data
