@@ -7,7 +7,7 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 
-from hr.forms import EmployeeForm
+from hr.forms import EmployeeForm, SalaryForm
 from hr.models import Employee
 
 
@@ -66,3 +66,17 @@ def employee_delete(request, pk):
         employee.delete()
         return redirect(reverse("employee_list"))
     return render(request, "employee_confirm_delete.html", {"object": employee})
+
+
+@user_passes_test(user_is_superadmin)
+def calculate_salary(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    if request.method == 'POST':
+        form = SalaryForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            # Perform salary calculation logic here
+            return render(request, 'salary_calculator.html', {'employee': employee, 'form': form})
+    else:
+        form = SalaryForm(instance=employee)
+    return render(request, 'salary_calculator.html', {'employee': employee, 'form': form})
