@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.shortcuts import render
 from .models import Department, Position
 
@@ -25,3 +26,20 @@ def homework_querysets(request):
         'specific_department_positions': specific_department_positions,
     }
     return render(request, 'homework_querysets.html', context)
+=======
+from django.http import JsonResponse
+from .models import Department, Position
+
+def homework_querysets(request):
+    # Example query: Get all departments
+    departments = list(Department.objects.all().values())
+
+    # Example query: Get all positions
+    positions = list(Position.objects.all().values())
+
+    # Convert query results to a list of dictionaries
+    return JsonResponse({
+        'departments': departments,
+        'positions': positions
+    })
+>>>>>>> baa3c4a14e311c91efca999660cd21b362ae316c
