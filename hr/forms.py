@@ -1,12 +1,34 @@
 from django import forms
-from .models import Employee  # Import your Employee model
+from .models import Employee
 
-class EmployeeForm(forms.ModelForm):
-    # Assuming 'Employee' is your model name and it has 'name', 'sick_days', and 'holiday_days' fields
-
+class SalaryForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['name', 'sick_days', 'holiday_days', 'salary']  # Add all the fields you need
+        fields = ['employee', 'sick_days', 'holiday_days']
+
+    def clean_employee(self):
+        employee = self.cleaned_data.get('employee')
+        if not employee:
+            raise forms.ValidationError("Employee field must be filled.")
+        return employee
+
+    def clean(self):
+        cleaned_data = super().clean()
+        sick_days = cleaned_data.get('sick_days')
+        holiday_days = cleaned_data.get('holiday_days')
+
+        if sick_days is not None and sick_days > 5:
+            raise forms.ValidationError("The number of sick days cannot exceed 5.")
+
+        if holiday_days is not None and holiday_days > 3:
+            raise forms.ValidationError("The number of holiday days cannot exceed 3.")
+
+        return cleaned_data
+
+class EmployeeForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['name', 'sick_days', 'holiday_days', 'salary']
 
     def clean_sick_days(self):
         sick_days = self.cleaned_data.get('sick_days')
@@ -22,10 +44,9 @@ class EmployeeForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Add any additional validation here
+        # Додавання будь-яке додаткове підтвердження тут
         return cleaned_data
 
-    # Read-only field to display the employee's name for whom the salary is calculated
     def __init__(self, *args, **kwargs):
         super(EmployeeForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
@@ -33,5 +54,5 @@ class EmployeeForm(forms.ModelForm):
             self.fields['salary_display'] = forms.CharField(
                 label='Salary for',
                 initial=f'{instance.name} - {instance.salary}',
-                disabled=True,  # This makes the field read-only
+                disabled=True,
             )
