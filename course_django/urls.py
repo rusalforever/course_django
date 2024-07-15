@@ -16,16 +16,13 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import (
-    include,
-    path,
-)
+from django.urls import include, path
 
 urlpatterns = [
     path("", include("hr.urls")),
     path("hr_super_secret_admin/", admin.site.urls),
 
-    # Examples
-    path('examples/', include('examples.urls'))
-
+    path('examples/', include('examples.urls')),
+    
+    path('hr/', include('hr.urls')),
 ]
