@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homework Querysets</title>
+</head>
+<body>
+    <h1>Departments</h1>
+    <ul>
+        {% for department in departments %}
+            <li>{{ department.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Positions</h1>
+    <ul>
+        {% for position in positions %}
+            <li>{{ position.title }} ({{ position.department.name }})</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Active Positions</h1>
+    <ul>
+        {% for position in active_positions %}
+            <li>{{ position.title }} ({{ position.department.name }})</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Manager Positions</h1>
+    <ul>
+        {% for position in manager_positions %}
+            <li>{{ position.title }} ({{ position.department.name }})</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Positions in Specific Department</h1>
+    <ul>
+        {% for position in specific_department_positions %}
+            <li>{{ position.title }} ({{ position.department.name }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
