@@ -3,17 +3,16 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
 from django.core.cache import cache, caches
-# from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _
-
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
 
-    def __str(self):
+    def __str__(self):
         return self.name
 
     @cached_property
@@ -24,7 +23,6 @@ class Company(models.Model):
         if not self.pk and Company.objects.exists():
             raise ValidationError("There can be only one Company instance")
         return super(Company, self).save(*args, **kwargs)
-
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
@@ -38,7 +36,6 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
-
 class Position(models.Model):
     title = models.CharField(verbose_name=_("Title"), max_length=200)
     department = models.ForeignKey("Department", on_delete=models.CASCADE)
@@ -46,6 +43,10 @@ class Position(models.Model):
     is_active = models.BooleanField(default=True)
     job_description = models.CharField(verbose_name=_("Job Description"), max_length=500, default="")
     monthly_rate = models.IntegerField(default=0)
+
+    @cached_property
+    def total_positions(self):
+        return Position.objects.count()
 
     def save(self, *args, **kwargs):
         if self.is_manager:
@@ -66,15 +67,13 @@ class Position(models.Model):
     def __str__(self):
         return self.title
 
-
 class Employee(AbstractUser):
     hire_date = models.DateField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     position = models.ForeignKey(
         "Position",
         on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        null=True, blank=True,
     )
     phone_number = models.CharField(max_length=151, default="")
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
@@ -99,7 +98,6 @@ class Employee(AbstractUser):
     def delete(self, *args, **kwargs):
         cache.delete(f'employee_{self.pk}')
         super().delete(*args, **kwargs)
-
 
 class MonthlySalary(models.Model):
     month_year = models.DateField()

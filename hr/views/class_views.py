@@ -1,3 +1,4 @@
+from django.views.generic import TemplateView, DetailView, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
 from django.shortcuts import (
@@ -7,14 +8,29 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views import View
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.contrib import messages
 
 from hr.forms import EmployeeForm
-from hr.models import Employee
-
+from hr.models import Company, Employee
 
 def user_is_superadmin(user) -> bool:
     return user.is_superuser
 
+@method_decorator(cache_page(60 * 3), name='dispatch')
+class EmployeeProfileView(DetailView):
+    model = Employee
+    template_name = 'employee_profile.html'
+
+class HomePageView(TemplateView):
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        company = Company.objects.first()
+        context['company_logo'] = company.logo.url if company and company.logo else 'static/images/default_logo.png'
+        return context
 
 class EmployeeListView(View):
     def get(self, request):
@@ -28,7 +44,6 @@ class EmployeeListView(View):
 
         context = {'employees': employees}
         return render(request, 'employee_list.html', context)
-
 
 class EmployeeCreateView(UserPassesTestMixin, View):
     def get(self, request):
@@ -45,24 +60,21 @@ class EmployeeCreateView(UserPassesTestMixin, View):
     def test_func(self):
         return user_is_superadmin(self.request.user)
 
+class EmployeeUpdateView(UserPassesTestMixin, UpdateView):
+    model = Employee
+    form_class = EmployeeForm
+    template_name = 'employee_form.html'
 
-class EmployeeUpdateView(UserPassesTestMixin, View):
-    def get(self, request, pk):
-        employee = get_object_or_404(Employee, pk=pk)
-        form = EmployeeForm(instance=employee)
-        return render(request, 'employee_form.html', {'form': form})
+    def form_valid(self, form):
+        messages.success(self.request, 'Employee updated successfully.')
+        return super().form_valid(form)
 
-    def post(self, request, pk):
-        employee = get_object_or_404(Employee, pk=pk)
-        form = EmployeeForm(request.POST, instance=employee)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('hr:employee_list'))
-        return render(request, 'employee_form.html', {'form': form})
+    def form_invalid(self, form):
+        messages.error(self.request, 'Failed to update employee.')
+        return super().form_invalid(form)
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
-
 
 class EmployeeDeleteView(UserPassesTestMixin, View):
     def get(self, request, pk):

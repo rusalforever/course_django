@@ -1,10 +1,16 @@
-{% extends 'base.html' %}
-{% load i18n %}
-{% load static %}
-
-{% block title %}{% trans 'Home' %}{% endblock title %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    {% load static %}
+    {% load i18n %}
+    <header>
+        <img src="{% static 'images/default_logo.png' %}" alt="Default Logo" id="default-logo" style="display: none;">
+        <img src="{{ company_logo }}" alt="Company Logo" id="company-logo">
+    </header>
     <div class="header">
         <img src="{% static 'img/logo.png' %}" alt="Logo">
         <h1>Welcome to HR System</h1>
@@ -16,10 +22,10 @@
         <p>{% trans 'You can manage employees or calculate salaries from here.' %}</p>
         <p>You can manage employees or calculate salaries from here.</p>
         <p class="lead">
-            <a class="btn btn-primary btn-lg" href="{% url 'hr:employee_list' %}"
-               role="button">{% trans 'Employee List' %}</a>
-            <a class="btn btn-success btn-lg" href="{% url 'hr:salary_calculator' %}"
-               role="button">{% trans 'Salary Calculator' %}</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'hr:employee_list' %}" role="button">{% trans 'Employee List' %}</a>
+            <a class="btn btn-success btn-lg" href="{% url 'hr:salary_calculator' %}" role="button">{% trans 'Salary Calculator' %}</a>
         </p>
     </div>
-{% endblock content %}
+    <!-- Rest of your template -->
+</body>
+</html>
