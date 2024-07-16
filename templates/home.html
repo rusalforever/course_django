@@ -5,12 +5,10 @@
     <title>Home</title>
 </head>
 <body>
+    {% load static %}
+    {% load i18n %}
     <header>
-        {% load static %}
         <img src="{% static 'images/default_logo.png' %}" alt="Default Logo" id="default-logo" style="display: none;">
-    </header>
-</body>
-</html>
         <img src="{{ company_logo }}" alt="Company Logo" id="company-logo">
     </header>
     <div class="header">
@@ -24,10 +22,8 @@
         <p>{% trans 'You can manage employees or calculate salaries from here.' %}</p>
         <p>You can manage employees or calculate salaries from here.</p>
         <p class="lead">
-            <a class="btn btn-primary btn-lg" href="{% url 'hr:employee_list' %}"
-               role="button">{% trans 'Employee List' %}</a>
-            <a class="btn btn-success btn-lg" href="{% url 'hr:salary_calculator' %}"
-               role="button">{% trans 'Salary Calculator' %}</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'hr:employee_list' %}" role="button">{% trans 'Employee List' %}</a>
+            <a class="btn btn-success btn-lg" href="{% url 'hr:salary_calculator' %}" role="button">{% trans 'Salary Calculator' %}</a>
         </p>
     </div>
     <!-- Rest of your template -->
