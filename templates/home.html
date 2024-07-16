@@ -6,7 +6,11 @@
 </head>
 <body>
     <header>
+        {% load static %}
         <img src="{% static 'images/default_logo.png' %}" alt="Default Logo" id="default-logo" style="display: none;">
+    </header>
+</body>
+</html>
         <img src="{{ company_logo }}" alt="Company Logo" id="company-logo">
     </header>
     <div class="header">
