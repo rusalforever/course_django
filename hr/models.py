@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
+    logo = models.ImageField(null=True, blank=True)
     address = models.CharField(max_length=200)
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
