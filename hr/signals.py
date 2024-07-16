@@ -1,11 +1,16 @@
+# /hr/signals.py
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from hr.models import Position
+from hr.models import Department, Position
 import logging
 from hr.constants import MINIMUM_SALARY
 
 logger = logging.getLogger()
 
+@receiver(pre_save, sender=Department)
+def capitalize_department_name(sender, instance, **kwargs):
+    if instance.name:
+        instance.name = instance.name.capitalize()
 
 @receiver(pre_save, sender=Position)
 def ensure_minimum_wage(sender, instance, **kwargs):
