@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
 from django.shortcuts import (
@@ -8,12 +8,19 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views import View
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 from hr.forms import EmployeeForm
 from hr.models import Company, Employee
 
 def user_is_superadmin(user) -> bool:
     return user.is_superuser
+
+@method_decorator(cache_page(60 * 3), name='dispatch')
+class EmployeeProfileView(DetailView):
+    model = Employee
+    template_name = 'employee_profile.html'
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
