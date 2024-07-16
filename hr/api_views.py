@@ -6,15 +6,28 @@ from rest_framework.views import APIView
 
 from hr.calculate_salary import CalculateMonthRateSalary
 from hr.models import (
+    Department,
     Employee,
     Position,
 )
 from hr.pydantic_models import WorkingDays
 from hr.serializers import (
+    DepartmentSerializer,
     EmployeeSerializer,
     PositionSerializer,
     SalarySerializer,
 )
+
+
+class DepartmentViewSet(viewsets.ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+
+    @action(detail=True, methods=['get'])
+    def employee_count(self, request, pk=None):
+        department = self.get_object()
+        employee_count = department.employees.count()  # Assuming a related name 'employees' in the Employee model
+        return Response({'employee_count': employee_count})
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
