@@ -3,9 +3,11 @@ import logging
 from abc import ABC, abstractmethod
 from math import ceil
 
+from django.db import transaction
+
 from common.enums import WorkDayEnum
 from hr.models import Employee, MonthlySalary
-
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -81,26 +83,23 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
 
         return salary if salary <= self.employee.position.monthly_rate else self.employee.position.monthly_rate
 
+
+
     def save_salary(self, salary: int, date: datetime.date):
         month_date = date.replace(day=1)
-        try:
-            MonthlySalary.objects.get(
-                month_year=month_date,
-                employee=self.employee,
-                paid=True,
-            )
-        except MonthlySalary.DoesNotExist:
-            MonthlySalary.objects.update_or_create(
-                month_year=month_date,
-                employee=self.employee,
-                defaults={'salary': salary, 'paid': False},
-            )
-            logger.info(
-                msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} created.',
-            )
-        else:
-            logger.warning(
-                msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} already paid.',
-            )
-        finally:
-            logger.info('tmp cleaned')
+
+        with transaction.atomic():
+            try:
+                monthly_salary, created = MonthlySalary.objects.get_or_create(
+                    month_year=month_date,
+                    employee=self.employee,
+                    defaults={'salary': salary, 'paid': False, 'paid_date': date}
+                )
+                if created:
+                    logger.info(
+                        f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} created.')
+                else:
+                    logger.warning(
+                        f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} already exists.')
+            except Exception as e:
+                logger.error(f'Error saving salary: {e}')
