@@ -6,6 +6,7 @@ from django.forms import ChoiceField
 
 from common.enums import WorkDayEnum
 from hr.models import Employee
+from django.core.exceptions import ValidationError
 
 
 WorkDayChoices = [(tag.name, tag.value) for tag in WorkDayEnum]
@@ -18,7 +19,7 @@ class EmployeeForm(forms.ModelForm):
 
 
 class SalaryForm(forms.Form):
-    employee = forms.ModelChoiceField(queryset=Employee.objects.all())
+    employee = forms.ModelChoiceField(queryset=Employee.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(SalaryForm, self).__init__(*args, **kwargs)
@@ -42,3 +43,31 @@ class SalaryForm(forms.Form):
                     choices=WorkDayChoices,
                     initial=WorkDayEnum.WORKING_DAY.name,
                 )
+
+    def clean_employee(self):
+        employee = self.cleaned_data.get('employee')
+        if not employee:
+            raise ValidationError("Employee is required.")
+        return employee
+
+    def clean(self):
+        cleaned_data = super().clean()
+        sick_days, holidays = self._calculate_dayoffs(cleaned_data)
+
+        if sick_days > 5:
+            raise ValidationError("Sick days should be less or equals than 5.")
+        if holidays > 3:
+            raise ValidationError("Holidays should be less or equals 3.")
+
+        return cleaned_data
+
+    def _calculate_dayoffs(self, cleaned_data):
+        sick_days = 0
+        holidays = 0
+        for field_name, value in cleaned_data.items():
+            if field_name.startswith('day_'):
+                if value == WorkDayEnum.SICK_DAY.name:
+                    sick_days += 1
+                elif value == WorkDayEnum.HOLIDAY.name:
+                    holidays += 1
+        return sick_days, holidays
