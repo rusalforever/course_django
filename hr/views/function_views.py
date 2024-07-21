@@ -1,3 +1,5 @@
+# /hr/views/function_views.py
+
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q
 from django.shortcuts import (
@@ -8,7 +10,7 @@ from django.shortcuts import (
 from django.urls import reverse
 
 from hr.forms import EmployeeForm
-from hr.models import Employee
+from hr.models import Employee, Department, Position
 
 
 def user_is_superadmin(user) -> bool:
@@ -66,3 +68,29 @@ def employee_delete(request, pk):
         employee.delete()
         return redirect(reverse("employee_list"))
     return render(request, "employee_confirm_delete.html", {"object": employee})
+
+def homework_querysets(request):
+    # Query 1
+    departments_with_managers = Department.objects.filter(position__title='Manager').order_by('name')
+
+    # Query 2
+    active_positions_count = Position.objects.filter(is_active=True).count()
+
+    # Query 3
+    active_or_hr_positions = Position.objects.filter(Q(is_active=True) | Q(department__name='HR'))
+
+    # Query 4
+    departments_with_managers_names = Department.objects.filter(position__title='Manager').values('name')
+
+    # Query 5
+    positions_sorted = Position.objects.order_by('name').values('name', 'is_active')
+
+    context = {
+        'departments_with_managers': departments_with_managers,
+        'active_positions_count': active_positions_count,
+        'active_or_hr_positions': active_or_hr_positions,
+        'departments_with_managers_names': departments_with_managers_names,
+        'positions_sorted': positions_sorted,
+    }
+
+    return render(request, 'homework_querysets.html', context)

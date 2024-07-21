@@ -1,6 +1,13 @@
-from django.urls import path
+# /hr/urls.py
 
-# from hr.views import generic_views as views
+from django.urls import path
+from hr.views.function_views import (
+    employee_list,
+    employee_create,
+    employee_update,
+    employee_delete,
+    homework_querysets,
+)
 from hr.views import class_views as views
 
 urlpatterns = [
@@ -18,7 +25,15 @@ urlpatterns = [
         views.EmployeeDeleteView.as_view(),
         name="employee_delete",
     ),
+
+    path('employee-list/', employee_list, name='employee_list'),
+    path('employee-create/', employee_create, name='employee_create'),
+    path('employee-update/<int:pk>/', employee_update, name='employee_update'),
+    path('employee-delete/<int:pk>/', employee_delete, name='employee_delete'),
+    
+    path('homework-querysets/', homework_querysets, name='homework_querysets'),  
 ]
+
 
 # from hr.views.function_views import (
 #     employee_create,
