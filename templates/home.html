@@ -6,7 +6,7 @@
 
 {% block content %}
     <div class="header">
-        <img src="{% static 'img/logo.png' %}" alt="Logo">
+        <img src="{% if logo %}{{ logo }}{% else %}{% static 'img/logo.png' %}{% endif %}" alt="Logo">
         <h1>Welcome to HR System</h1>
     </div>
     <div class="jumbotron">
