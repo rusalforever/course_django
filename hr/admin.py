@@ -1,30 +1,30 @@
 from django.contrib import admin
-from django.core.exceptions import ValidationError
+from .models import Employee, Company, Position
 
-from hr.models import (
-    Department,
-    Employee,
-    Position,
-)
+# Спеціальні дії адміністратора
+def make_active(modeladmin, request, queryset):
+    queryset.update(is_active=True)
 
+make_active.short_description = "Mark selected employees as active"
 
-@admin.register(Department)
-class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ("name", "parent_department")
-
-
-@admin.register(Position)
-class PositionAdmin(admin.ModelAdmin):
-    list_display = ("title", "department", "is_manager")
-
-    def save_model(self, request, obj, form, change):
-        try:
-            obj.save()
-        except ValidationError as e:
-            form.add_error(None, e)
-            super().save_model(request, obj, form, change)
-
-
+# Додати адміністративний клас співробітнтника
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ("username", "position", "hire_date")
+    list_display = ('name', 'phone_number', 'position', 'department', 'is_active')
+    list_filter = ('department', 'is_active')
+    search_fields = ('name', 'email')
+    actions = [make_active]
+
+    # Форма макету
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'email', 'phone_number')
+        }),
+        ('Job Information', {
+            'fields': ('position', 'department', 'is_active')
+        }),
+    )
+
+# Зареєструвати інші моделі
+admin.site.register(Company)
+admin.site.register(Position)
