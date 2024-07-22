@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hr', '0006_employee_avatar_employee_cv'),
+        ("hr", "0006_employee_avatar_employee_cv"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='monthlysalary',
-            name='paid_date',
+            model_name="monthlysalary",
+            name="paid_date",
             field=models.DateField(default=False),
         ),
     ]

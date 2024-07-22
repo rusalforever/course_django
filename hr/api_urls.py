@@ -13,12 +13,12 @@ from hr.api_views import (
 )
 
 router = DefaultRouter()
-router.register(r'departments', DepartmentViewSet)
-router.register(r'employees', EmployeeViewSet)
-router.register(r'positions', PositionViewSet)
+router.register(r"departments", DepartmentViewSet)
+router.register(r"employees", EmployeeViewSet)
+router.register(r"positions", PositionViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-token-auth/', views.obtain_auth_token),
-    path('calculate_salary/', SalaryCalculatorView.as_view(), name='calculate_salary'),
+    path("", include(router.urls)),
+    path("api-token-auth/", views.obtain_auth_token),
+    path("calculate_salary/", SalaryCalculatorView.as_view(), name="calculate_salary"),
 ]

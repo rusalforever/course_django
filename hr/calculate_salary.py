@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class AbstractSalaryCalculate(ABC):
     sick_days_multiplier = 0.6
     vacation_days_multiplier = 0.8
-    day_prefix = 'day_'
+    day_prefix = "day_"
 
     def __init__(self, employee: Employee):
         self.employee = employee
@@ -51,19 +51,31 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
     @staticmethod
     def _calculate_monthly_working_days(days_dict: dict[str, int]) -> int:
         return len(
-            {day: work_type for day, work_type in days_dict.items() if work_type == WorkDayEnum.WORKING_DAY.name},
+            {
+                day: work_type
+                for day, work_type in days_dict.items()
+                if work_type == WorkDayEnum.WORKING_DAY.name
+            },
         )
 
     @staticmethod
     def _calculate_monthly_sick_days(days_dict: dict[str, int]) -> int:
         return len(
-            {day: work_type for day, work_type in days_dict.items() if work_type == WorkDayEnum.SICK_DAY.name},
+            {
+                day: work_type
+                for day, work_type in days_dict.items()
+                if work_type == WorkDayEnum.SICK_DAY.name
+            },
         )
 
     @staticmethod
     def _calculate_monthly_vacation_days(days_dict: dict[str, int]) -> int:
         return len(
-            {day: work_type for day, work_type in days_dict.items() if work_type == WorkDayEnum.VACATION.name},
+            {
+                day: work_type
+                for day, work_type in days_dict.items()
+                if work_type == WorkDayEnum.VACATION.name
+            },
         )
 
     def _calculate_sick_daily_salary(self) -> int:
@@ -93,11 +105,19 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
         )
 
     def calculate_salary(self, month_days: WorkingDays) -> int:
-        self._daily_salary = self._calculate_daily_salary(base_working_days=month_days.base_working_days)
+        self._daily_salary = self._calculate_daily_salary(
+            base_working_days=month_days.base_working_days
+        )
 
-        working_days_salary = self._calculate_working_monthly_salary(working_days=month_days.working)
-        sick_monthly_salary = self._calculate_sick_monthly_salary(sick_days=month_days.sick)
-        holiday_monthly_salary = self._calculate_vacation_monthly_salary(vacation_days=month_days.vacation)
+        working_days_salary = self._calculate_working_monthly_salary(
+            working_days=month_days.working
+        )
+        sick_monthly_salary = self._calculate_sick_monthly_salary(
+            sick_days=month_days.sick
+        )
+        holiday_monthly_salary = self._calculate_vacation_monthly_salary(
+            vacation_days=month_days.vacation
+        )
 
         salary = sum(
             (
@@ -107,22 +127,28 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
             ),
         )
 
-        return salary if salary <= self.employee.position.monthly_rate else self.employee.position.monthly_rate
+        return (
+            salary
+            if salary <= self.employee.position.monthly_rate
+            else self.employee.position.monthly_rate
+        )
 
     def save_salary(self, salary: int, date: datetime.date):
         month_date = date.replace(day=1)
         try:
-            MonthlySalary.objects.get(month_year=month_date, employee=self.employee, paid=True)
+            MonthlySalary.objects.get(
+                month_year=month_date, employee=self.employee, paid=True
+            )
         except MonthlySalary.DoesNotExist:
             MonthlySalary.objects.update_or_create(
                 month_year=month_date,
                 employee=self.employee,
-                defaults={'salary': salary, 'paid': False},
+                defaults={"salary": salary, "paid": False},
             )
             logger.info(
-                msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} created.',
+                msg=f"Salary for employee {self.employee} for {month_date.month}/{month_date.year} created.",
             )
         else:
             logger.warning(
-                msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} already paid.',
+                msg=f"Salary for employee {self.employee} for {month_date.month}/{month_date.year} already paid.",
             )

@@ -14,7 +14,7 @@ WorkDayChoices = [(tag.name, tag.value) for tag in WorkDayEnum]
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ('username', 'first_name', 'last_name', 'email', 'position')
+        fields = ("username", "first_name", "last_name", "email", "position")
 
 
 class SalaryForm(forms.Form):
@@ -27,18 +27,22 @@ class SalaryForm(forms.Form):
         _, num_days = calendar.monthrange(today.year, today.month)
 
         for day in range(1, num_days + 1):
-            weekday_name = calendar.day_name[calendar.weekday(today.year, today.month, day)]
-            field_name = f'day_{day}'
+            weekday_name = calendar.day_name[
+                calendar.weekday(today.year, today.month, day)
+            ]
+            field_name = f"day_{day}"
 
-            if calendar.weekday(today.year, today.month, day) >= 5:  # Saturday and Sunday
+            if (
+                calendar.weekday(today.year, today.month, day) >= 5
+            ):  # Saturday and Sunday
                 self.fields[field_name] = ChoiceField(
-                    label=f'{day} - {weekday_name}',
+                    label=f"{day} - {weekday_name}",
                     choices=[(WorkDayEnum.WEEKEND.name, WorkDayEnum.WEEKEND.value)],
                     initial=WorkDayEnum.WEEKEND.name,
                 )
             else:
                 self.fields[field_name] = ChoiceField(
-                    label=f'{day} - {weekday_name}',
+                    label=f"{day} - {weekday_name}",
                     choices=WorkDayChoices,
                     initial=WorkDayEnum.WORKING_DAY.name,
                 )

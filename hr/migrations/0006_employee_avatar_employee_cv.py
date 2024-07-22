@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hr', '0005_monthlysalary_paid_date_position_job_description_en_and_more'),
+        ("hr", "0005_monthlysalary_paid_date_position_job_description_en_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='employee',
-            name='avatar',
-            field=models.ImageField(blank=True, null=True, upload_to='avatars/'),
+            model_name="employee",
+            name="avatar",
+            field=models.ImageField(blank=True, null=True, upload_to="avatars/"),
         ),
         migrations.AddField(
-            model_name='employee',
-            name='cv',
-            field=models.FileField(blank=True, help_text='PDF, DOC, or DOCX', null=True, upload_to='cvs/'),
+            model_name="employee",
+            name="cv",
+            field=models.FileField(
+                blank=True, help_text="PDF, DOC, or DOCX", null=True, upload_to="cvs/"
+            ),
         ),
     ]

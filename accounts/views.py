@@ -9,7 +9,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 
 class LoginView(BaseLoginView):
     def get_success_url(self):
-        next_url = self.request.GET.get('next')
+        next_url = self.request.GET.get("next")
         if next_url and url_has_allowed_host_and_scheme(
             url=next_url,
             allowed_hosts={self.request.get_host()},
@@ -17,16 +17,16 @@ class LoginView(BaseLoginView):
         ):
             return next_url
 
-        return reverse_lazy('home')
+        return reverse_lazy("home")
 
 
 class PasswordResetView(BasePasswordResetView):
-    email_template_name = 'password_reset_email.txt'
-    html_email_template_name = 'password_reset_email.html'
-    template_name = 'password_reset_form.html'
-    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = "password_reset_email.txt"
+    html_email_template_name = "password_reset_email.html"
+    template_name = "password_reset_form.html"
+    success_url = reverse_lazy("accounts:password_reset_done")
 
 
 class PasswordResetConfirmView(BasePasswordResetConfirmView):
-    success_url = reverse_lazy('accounts:password_reset_complete')
-    template_name = 'password_reset_confirm.html'
+    success_url = reverse_lazy("accounts:password_reset_complete")
+    template_name = "password_reset_confirm.html"

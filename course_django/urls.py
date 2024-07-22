@@ -28,17 +28,17 @@ from general.views import HomeViev
 
 
 urlpatterns = [
-    path('api/hr/', include(('hr.api_urls', 'hr'), namespace='api-hr')),
+    path("api/hr/", include(("hr.api_urls", "hr"), namespace="api-hr")),
 ]
 
 urlpatterns += i18n_patterns(
-    path('', HomeViev.as_view(), name='home'),
-    path('hr/', include(('hr.urls', 'hr'), namespace='hr')),
-    path('hr_super_secret_admin/', admin.site.urls),
-    path('examples/', include('examples.urls')),
+    path("", HomeViev.as_view(), name="home"),
+    path("hr/", include(("hr.urls", "hr"), namespace="hr")),
+    path("hr_super_secret_admin/", admin.site.urls),
+    path("examples/", include("examples.urls")),
     path(
-        'accounts/',
-        include(('accounts.urls', 'accounts'), namespace='accounts'),
+        "accounts/",
+        include(("accounts.urls", "accounts"), namespace="accounts"),
     ),
-    path('i18n/', include('django.conf.urls.i18n')),
+    path("i18n/", include("django.conf.urls.i18n")),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -16,7 +16,7 @@ class SqlClient(Client):
         if filter_condition:
             pass
 
-        return {'data': 'entity from SQL', 'filter': filter_condition}
+        return {"data": "entity from SQL", "filter": filter_condition}
 
 
 class MongoClient(Client):
@@ -24,7 +24,7 @@ class MongoClient(Client):
         if filter_condition:
             pass
 
-        return {'data': 'entity from MongoDB', 'filter': filter_condition}
+        return {"data": "entity from MongoDB", "filter": filter_condition}
 
 
 class BaseRepository:
@@ -42,7 +42,7 @@ class Entity1Repository(BaseRepository):
         return self._get()
 
     def get_active(self):
-        active_filter = {'status': 'active'}
+        active_filter = {"status": "active"}
         return self._get(filter_condition=active_filter)
 
 
@@ -51,12 +51,14 @@ class Entity2Repository(BaseRepository):
         return self._get()
 
     def get_inactive(self):
-        inactive_filter = {'status': 'inactive'}
+        inactive_filter = {"status": "inactive"}
         return self._get(filter_condition=inactive_filter)
 
 
 class Service:
-    def __init__(self, entity1_repo: Entity1Repository, entity2_repo: Entity2Repository):
+    def __init__(
+        self, entity1_repo: Entity1Repository, entity2_repo: Entity2Repository
+    ):
         self.entity1_repo = entity1_repo
         self.entity2_repo = entity2_repo
 
