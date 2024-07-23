@@ -3,8 +3,6 @@ from django.core.cache import cache, caches
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.functional import cached_property
-
-# from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _
 
 
@@ -14,7 +12,7 @@ class Company(models.Model):
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
 
-    def __str(self):
+    def __str__(self):
         return self.name
 
     @cached_property
@@ -29,6 +27,7 @@ class Company(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
     parent_department = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
@@ -96,8 +95,6 @@ class Employee(AbstractUser):
 
         caches["my_key"].clear()
         print(caches["my_key"]._cache.keys())
-        # On Redis
-        # cache.delete_pattern("patern_*")
 
         cache.delete(f"employee_{self.id}")
 

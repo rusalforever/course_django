@@ -1,10 +1,6 @@
-from django.urls import (
-    include,
-    path,
-)
+from django.urls import include, path
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
-
 from hr.api_views import (
     DepartmentViewSet,
     EmployeeViewSet,
