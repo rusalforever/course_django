@@ -1,8 +1,7 @@
 from django.urls import path
 from django.views.decorators.cache import cache_page
-
-from hr.views import generic_views as views
-
+from .views import generic_views as views
+from .views import DepartmentViewSet, PositionViewSet, EmployeeViewSet
 
 urlpatterns = [
     path(
@@ -37,4 +36,8 @@ urlpatterns = [
         views.SalaryCalculatorView.as_view(),
         name="salary_calculator",
     ),
+    
+    path('departments/', DepartmentViewSet.as_view({'get': 'list'}), name='department-list'),
+    path('positions/', PositionViewSet.as_view({'get': 'list'}), name='position-list'),
+    path('employee-viewset/', EmployeeViewSet.as_view({'get': 'list'}), name='employee-viewset-list'),
 ]

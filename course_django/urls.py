@@ -19,20 +19,16 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import (
-    include,
-    path,
-)
+from django.urls import include, path
 
-from general.views import HomeViev
-
+from general.views import HomeView
 
 urlpatterns = [
     path("api/hr/", include(("hr.api_urls", "hr"), namespace="api-hr")),
 ]
 
 urlpatterns += i18n_patterns(
-    path("", HomeViev.as_view(), name="home"),
+    path("", HomeView.as_view(), name="home"),
     path("hr/", include(("hr.urls", "hr"), namespace="hr")),
     path("hr_super_secret_admin/", admin.site.urls),
     path("examples/", include("examples.urls")),
@@ -41,4 +37,7 @@ urlpatterns += i18n_patterns(
         include(("accounts.urls", "accounts"), namespace="accounts"),
     ),
     path("i18n/", include("django.conf.urls.i18n")),
-) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
