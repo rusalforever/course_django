@@ -6,6 +6,7 @@ from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 from hr.api_views import (
+    DepartmentViewSet,
     EmployeeViewSet,
     PositionViewSet,
     SalaryCalculatorView,
@@ -13,6 +14,7 @@ from hr.api_views import (
 
 
 router = DefaultRouter()
+router.register(r'departments', DepartmentViewSet)
 router.register(r'employees', EmployeeViewSet)
 router.register(r'positions', PositionViewSet)
 
