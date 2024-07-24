@@ -42,6 +42,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Response({'position_count': count})
 
 
+class PositionViewSet(viewsets.ModelViewSet):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+
+
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
