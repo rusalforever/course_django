@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from hr.permissions import HasPositionPermission
 
 from hr.calculate_salary import CalculateMonthRateSalary
 from hr.models import (
@@ -23,6 +24,7 @@ from hr.serializers import (
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    permission_classes = [HasPositionPermission]
 
     def get_queryset(self):
         queryset = super().get_queryset()
