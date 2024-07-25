@@ -53,8 +53,8 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def employee_count(self, request, pk=None):
-        depsrtment = self.get_object()
-        employee_count = Employee.objects.filter(depsrtment=depsrtment).count()
+        department = self.get_object()
+        employee_count = Employee.objects.filter(department=department).count()
         return Response({'employee_count': employee_count})
 
 
