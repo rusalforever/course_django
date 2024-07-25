@@ -9,6 +9,7 @@ from hr.models import (
     Employee,
     Position,
     Department,
+    Salary
 )
 from hr.pydantic_models import WorkingDays
 from hr.serializers import (
@@ -56,6 +57,11 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         department = self.get_object()
         employee_count = Employee.objects.filter(department=department).count()
         return Response({'employee_count': employee_count})
+
+
+class SalaryViewSet(viewsets.ModelViewSet):
+    queryset = Salary.objects.all()
+    serializer_class = SalarySerializer
 
 
 class SalaryCalculatorView(APIView):

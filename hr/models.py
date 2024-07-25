@@ -101,6 +101,15 @@ class Employee(AbstractUser):
         cache.delete(f'employee_{self.pk}')
         super().delete(*args, **kwargs)
 
+class Salary(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    working_days = models.IntegerField()
+    holiday_days = models.IntegerField()
+    sick_days = models.IntegerField(default=0)
+    vacation_days = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Salary for {self.employee.name}"
 
 class MonthlySalary(models.Model):
     month_year = models.DateField()
