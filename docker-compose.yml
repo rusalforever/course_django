@@ -1,3 +1,4 @@
+version: '3'
 services:
   web:
     build: .
@@ -76,3 +77,19 @@ services:
       redis:
         condition: service_healthy
 
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: hliebovsienko@example.com
+      PGADMIN_DEFAULT_PASSWORD: Silverlightsaber
+    ports:
+      - "5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
