@@ -41,6 +41,7 @@ class Department(models.Model):
 
 
 class Position(models.Model):
+    name = models.CharField(max_length=200)
     title = models.CharField(verbose_name=_('Title'), max_length=200)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
     is_manager = models.BooleanField(default=False)
