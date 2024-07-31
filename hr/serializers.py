@@ -22,7 +22,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
-        fields = ('id', 'title', 'department', 'is_manager', 'is_active', 'job_description', 'monthly_rate')
+        fields = ('id', 'name', 'title', 'department', 'is_manager', 'is_active', 'job_description', 'monthly_rate')
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:

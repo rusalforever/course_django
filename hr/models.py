@@ -43,7 +43,7 @@ class Department(models.Model):
 class Position(models.Model):
     name = models.CharField(max_length=200)
     title = models.CharField(verbose_name=_('Title'), max_length=200)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=False)
     is_manager = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     job_description = models.CharField(verbose_name=_('Job Description'), max_length=500, default='')

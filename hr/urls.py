@@ -1,11 +1,12 @@
 from django.urls import path, include
 from django.views.decorators.cache import cache_page
 from rest_framework.routers import DefaultRouter
-from hr.api_views import DepartmentViewSet
+from hr.api_views import DepartmentViewSet, PositionViewSet
 from hr.views import generic_views as views
 
 router = DefaultRouter()
 router.register(r'departments', DepartmentViewSet)
+router.register(r'positions', PositionViewSet)
 
 urlpatterns = [
     path(
