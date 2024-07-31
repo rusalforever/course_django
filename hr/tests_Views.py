@@ -1,59 +1,78 @@
-from django.test import TestCase, Client
+from rest_framework.test import APITestCase
 from django.urls import reverse
-from hr.models import Employee, Position, Department
-from django.contrib.auth import get_user_model
+from rest_framework import status
+from faker import Faker
+from hr.models import Department, Position, Employee
 
-class EmployeeProfileViewTest(TestCase):
+fake = Faker()
+
+class EmployeeProfileViewTest(APITestCase):
+
     def setUp(self):
-        self.client = Client()
-        self.position = Position.objects.create(name='Developer')
-        self.user = get_user_model().objects.create_user(username='testuser', password='12345')
+        self.department = Department.objects.create(name=fake.company())
+        self.position = Position.objects.create(name=fake.job(), department=self.department)
         self.employee = Employee.objects.create(
-            first_name='John', last_name='Doe', position=self.position, user=self.user
+            first_name=fake.first_name(),
+            last_name=fake.last_name(),
+            email=fake.email(),
+            phone=fake.phone_number(),
+            position=self.position
         )
-        self.profile_url = reverse('hr:employee_profile', args=[self.employee.pk])
+        self.url = reverse('employee-profile', args=[self.employee.id])
 
-    def test_profile_view(self):
-        self.client.login(username='testuser', password='12345')
-        response = self.client.get(self.profile_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'hr/employee_profile.html')
-        self.assertEqual(response.context['employee'], self.employee)
+    def test_employee_profile_view(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['first_name'], self.employee.first_name)
+        self.assertEqual(response.data['last_name'], self.employee.last_name)
+        self.assertEqual(response.data['email'], self.employee.email)
+        self.assertEqual(response.data['phone'], self.employee.phone)
 
-class EmployeeDeleteViewTest(TestCase):
+class EmployeeDeleteViewTest(APITestCase):
+
     def setUp(self):
-        self.client = Client()
-        self.position = Position.objects.create(name='Developer')
-        self.user = get_user_model().objects.create_user(username='testuser', password='12345')
+        self.department = Department.objects.create(name=fake.company())
+        self.position = Position.objects.create(name=fake.job(), department=self.department)
         self.employee = Employee.objects.create(
-            first_name='John', last_name='Doe', position=self.position, user=self.user
+            first_name=fake.first_name(),
+            last_name=fake.last_name(),
+            email=fake.email(),
+            phone=fake.phone_number(),
+            position=self.position
         )
-        self.delete_url = reverse('hr:employee_delete', args=[self.employee.pk])
+        self.url = reverse('employee-delete', args=[self.employee.id])
 
-    def test_delete_view(self):
-        self.client.login(username='testuser', password='12345')
-        response = self.client.post(self.delete_url)
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(Employee.objects.filter(pk=self.employee.pk).exists())
+    def test_employee_delete_view(self):
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Employee.objects.filter(id=self.employee.id).exists())
 
-class EmployeeUpdateViewTest(TestCase):
+class EmployeeUpdateViewTest(APITestCase):
+
     def setUp(self):
-        self.client = Client()
-        self.position = Position.objects.create(name='Developer')
-        self.user = get_user_model().objects.create_user(username='testuser', password='12345')
+        self.department = Department.objects.create(name=fake.company())
+        self.position = Position.objects.create(name=fake.job(), department=self.department)
         self.employee = Employee.objects.create(
-            first_name='John', last_name='Doe', position=self.position, user=self.user
+            first_name=fake.first_name(),
+            last_name=fake.last_name(),
+            email=fake.email(),
+            phone=fake.phone_number(),
+            position=self.position
         )
-        self.update_url = reverse('hr:employee_update', args=[self.employee.pk])
+        self.url = reverse('employee-update', args=[self.employee.id])
+        self.new_data = {
+            'first_name': fake.first_name(),
+            'last_name': fake.last_name(),
+            'email': fake.email(),
+            'phone': fake.phone_number(),
+            'position': self.position.id
+        }
 
-    def test_update_view(self):
-        self.client.login(username='testuser', password='12345')
-        response = self.client.post(self.update_url, {
-            'first_name': 'Jane',
-            'last_name': 'Smith',
-            'position': self.position.pk
-        })
-        self.assertEqual(response.status_code, 302)
+    def test_employee_update_view(self):
+        response = self.client.put(self.url, self.new_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.employee.refresh_from_db()
-        self.assertEqual(self.employee.first_name, 'Jane')
-        self.assertEqual(self.employee.last_name, 'Smith')
+        self.assertEqual(self.employee.first_name, self.new_data['first_name'])
+        self.assertEqual(self.employee.last_name, self.new_data['last_name'])
+        self.assertEqual(self.employee.email, self.new_data['email'])
+        self.assertEqual(self.employee.phone, self.new_data['phone'])
