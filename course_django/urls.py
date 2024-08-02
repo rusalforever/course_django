@@ -23,10 +23,22 @@ from django.urls import (
     include,
     path,
 )
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
+from general.schema import schema_view
 from general.views import HomeViev
 
-urlpatterns = []
+
+urlpatterns = [
+    path('api/hr/', include(('hr.api_urls', 'hr'), namespace='api-hr')),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]
 
 urlpatterns += i18n_patterns(
     path('', HomeViev.as_view(), name='home'),
@@ -35,7 +47,7 @@ urlpatterns += i18n_patterns(
     path('examples/', include('examples.urls')),
     path(
         'accounts/',
-        include(('accounts.urls', 'accounts'), namespace='accounts')
+        include(('accounts.urls', 'accounts'), namespace='accounts'),
     ),
     path('i18n/', include('django.conf.urls.i18n')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
