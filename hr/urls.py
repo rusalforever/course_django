@@ -1,7 +1,6 @@
 from django.urls import path
 from hr.views import class_views as views
 from hr.views import homework_querysets
-from django.http import HttpResponse 
 
 urlpatterns = [
     path("", views.home_view, name="home"),
@@ -17,6 +16,7 @@ urlpatterns = [
     path("employees/departments_without_managers/", homework_querysets.departments_without_managers, name="departments_without_managers"),
     path("employees/inactive_positions/", homework_querysets.inactive_positions, name="inactive_positions"),
 ]
+
 
 # from hr.views.function_views import (
 #     employee_create,
