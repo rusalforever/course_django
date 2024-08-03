@@ -18,15 +18,12 @@ urlpatterns = [
     path("employees/inactive_positions/", homework_querysets.inactive_positions, name="inactive_positions"),
 ]
 
-
-
 # from hr.views.function_views import (
 #     employee_create,
 #     employee_delete,
 #     employee_list,
 #     employee_update,
 # )
-#
 #
 # urlpatterns = [
 #     path("employees/", employee_list, name="employee_list"),
