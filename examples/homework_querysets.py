@@ -1,29 +1,25 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+from hr.models import Department, Position
 from django.db.models import Q
-from .models import Department, Position
 
 def homework_querysets(request):
-    # Запит 1
-    departments_with_managers = Department.objects.filter(position__title='Manager').order_by('name')
+    departments_with_managers = Department.objects.filter(position__title="Manager").order_by('name')
 
-    # Запит 2   
-    total_active_positions = Position.objects.filter(is_active=True).count()
+    active_positions_count = Position.objects.filter(is_active=True).count()
 
-    # Запит 3
-    active_or_hr_positions = Position.objects.filter(Q(is_active=True) | Q(department__name='HR'))
+    hr_department_positions = Position.objects.filter(is_active=True).filter(Q(department__name="HR"))
 
-    # Запит 4
-    departments_with_managers_names = Department.objects.filter(position__title='Manager').values('name')
+    departments_names_with_managers = Department.objects.filter(position__title="Manager").values('name')
 
-    # Запит 5
-    positions_sorted_by_name = Position.objects.order_by('name').values('name', 'is_active')
+    sorted_positions = Position.objects.all().order_by('title').values('title', 'is_active')
 
-    context = {
-        'departments_with_managers': departments_with_managers,
-        'total_active_positions': total_active_positions,
-        'active_or_hr_positions': active_or_hr_positions,
-        'departments_with_managers_names': departments_with_managers_names,
-        'positions_sorted_by_name': positions_sorted_by_name,
+    response_data = {
+        'departments_with_managers': list(departments_with_managers.values('name')),
+        'active_positions_count': active_positions_count,
+        'hr_department_positions': list(hr_department_positions.values('title', 'is_active')),
+        'departments_names_with_managers': list(departments_names_with_managers),
+        'sorted_positions': list(sorted_positions)
     }
 
-    return render(request, 'your_template.html', context)
+    return JsonResponse(response_data)
