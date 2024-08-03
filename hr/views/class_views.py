@@ -16,6 +16,10 @@ def user_is_superadmin(user) -> bool:
     return user.is_superuser
 
 
+def home_view(request):
+    return render(request, "home.html")
+
+
 class EmployeeListView(View):
     def get(self, request):
         search = request.GET.get("search", "")
