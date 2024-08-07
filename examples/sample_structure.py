@@ -64,3 +64,4 @@ class Service:
         entity1 = self.entity1_repo.get_active()
         entity2 = self.entity2_repo.get()
         return entity1, entity2
+    

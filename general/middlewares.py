@@ -28,3 +28,4 @@ class RequestStatisticsMiddleware(MiddlewareMixin):
 
             stats.requests += 1
             stats.save()
+            

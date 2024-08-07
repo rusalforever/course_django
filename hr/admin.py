@@ -29,3 +29,4 @@ class PositionAdmin(TranslationAdmin):
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('username', 'position', 'hire_date')
+    

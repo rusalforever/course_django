@@ -5,7 +5,6 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-
 class Company(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
@@ -22,11 +21,12 @@ class Company(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk and Company.objects.exists():
             raise ValidationError('There can be only one Company instance')
-        super(Company, self).save(*args, **kwargs)
+        return super(Company, self).save(*args, **kwargs)
 
 
 class Department(models.Model):
     name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
     parent_department = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -85,25 +85,19 @@ class Employee(AbstractUser):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        if self.pk:
-            cache_key = f'employee_{self.pk}'
-            cache.delete(cache_key)
-            caches['my_key'].clear()
+        print(caches['my_key']._cache.keys())
+        print(cache._cache.keys())
+
+        caches['my_key'].clear()
+        print(caches['my_key']._cache.keys())
+        # On Redis
+        # cache.delete_pattern("patern_*")
+
+        cache.delete(f'employee_{self.id}')
 
     def delete(self, *args, **kwargs):
         cache.delete(f'employee_{self.pk}')
         super().delete(*args, **kwargs)
-
-    @cached_property
-    def full_name(self):
-        return f'{self.first_name} {self.last_name}'
-
-    @cached_property
-    def age(self):
-        from datetime import date
-        if self.birth_date:
-            return date.today().year - self.birth_date.year
-        return None
 
 
 class MonthlySalary(models.Model):
@@ -112,7 +106,3 @@ class MonthlySalary(models.Model):
     bonus = models.IntegerField(null=True, blank=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.employee.full_name} - {self.month_year.strftime("%B %Y")}'
-

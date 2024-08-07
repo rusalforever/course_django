@@ -10,3 +10,4 @@ class RequestStatistics(models.Model):
     )
     requests = models.IntegerField(default=0)
     exception = models.IntegerField(default=0)
+    

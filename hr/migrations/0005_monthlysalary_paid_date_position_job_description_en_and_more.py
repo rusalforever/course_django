@@ -48,3 +48,4 @@ class Migration(migrations.Migration):
             field=models.CharField(max_length=200, verbose_name='Title'),
         ),
     ]
+    

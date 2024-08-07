@@ -126,3 +126,4 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
             logger.warning(
                 msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} already paid.',
             )
+            

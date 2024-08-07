@@ -76,3 +76,4 @@ class EmployeeDeleteView(UserPassesTestMixin, View):
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+    

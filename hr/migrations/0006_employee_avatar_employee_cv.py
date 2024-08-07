@@ -21,3 +21,4 @@ class Migration(migrations.Migration):
             field=models.FileField(blank=True, help_text='PDF, DOC, or DOCX', null=True, upload_to='cvs/'),
         ),
     ]
+    
