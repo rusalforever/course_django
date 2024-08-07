@@ -27,7 +27,6 @@ class EmployeeListView(ListView):
     context_object_name = "employees"
 
     def get_queryset(self):
-        raise Exception('test')
         queryset = super().get_queryset()
         search = self.request.GET.get("search", "")
 
