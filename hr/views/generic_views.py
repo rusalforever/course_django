@@ -40,6 +40,7 @@ class EmployeeListView(ListView):
         return queryset
 
 
+
 class EmployeeCreateView(UserIsAdminMixin, CreateView):
     model = Employee
     form_class = EmployeeForm
