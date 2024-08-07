@@ -30,7 +30,7 @@ class SalaryForm(forms.Form):
             weekday_name = calendar.day_name[calendar.weekday(today.year, today.month, day)]
             field_name = f'day_{day}'
 
-            if calendar.weekday(today.year, today.month, day) >= 5:  # Saturday and Sunday
+            if calendar.weekday(today.year, today.month, day) >= 5:
                 self.fields[field_name] = ChoiceField(
                     label=f'{day} - {weekday_name}',
                     choices=[(WorkDayEnum.WEEKEND.name, WorkDayEnum.WEEKEND.value)],

@@ -1,0 +1,7 @@
+Django
+Djangorestframework
+Django-modeltranslation
+Routers
+Views
+Serializers
+Authentication

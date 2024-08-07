@@ -3,7 +3,6 @@ from pydantic import (
     computed_field,
 )
 
-
 class WorkingDays(BaseModel):
     working: int
     sick: int
@@ -18,5 +17,6 @@ class WorkingDays(BaseModel):
                 self.working,
                 self.sick,
                 self.vacation,
+                self.holidays,
             ),
         )

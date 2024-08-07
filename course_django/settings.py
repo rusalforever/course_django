@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'general',
     'chat',
     'examples',
+    'accounts',
+    'common',
 ]
 
 MIDDLEWARE = [

@@ -7,13 +7,14 @@ from rest_framework.routers import DefaultRouter
 
 from hr.api_views import (
     EmployeeViewSet,
+    DepartmentViewSet,
     PositionViewSet,
     SalaryCalculatorView,
 )
 
-
 router = DefaultRouter()
 router.register(r'employees', EmployeeViewSet)
+router.register(r'departments', DepartmentViewSet)
 router.register(r'positions', PositionViewSet)
 
 urlpatterns = [
