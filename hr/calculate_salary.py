@@ -1,16 +1,10 @@
 import datetime
 import logging
-from abc import (
-    ABC,
-    abstractmethod,
-)
+from abc import ABC, abstractmethod
 from math import ceil
 
 from common.enums import WorkDayEnum
-from hr.models import (
-    Employee,
-    MonthlySalary,
-)
+from hr.models import Employee, MonthlySalary
 from hr.pydantic_models import WorkingDays
 
 
@@ -44,9 +38,7 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
                 if work_type not in (WorkDayEnum.HOLIDAY.name, WorkDayEnum.WEEKEND.name)
             },
         )
-
-    def _calculate_daily_salary(self, base_working_days: int) -> int:
-        return ceil(self.employee.position.monthly_rate / base_working_days)
+    
 
     @staticmethod
     def _calculate_monthly_working_days(days_dict: dict[str, int]) -> int:
@@ -92,6 +84,13 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
             vacation=vacation_days,
         )
 
+    def _calculate_daily_salary(self, base_working_days: int) -> int:
+        if not self.employee.position or self.employee.position.monthly_rate is None:
+            logger.error(f'Employee {self.employee} has no position or monthly rate set.')
+            raise ValueError("Employee position or monthly rate is not set.")
+        
+        return ceil(self.employee.position.monthly_rate / base_working_days)
+
     def calculate_salary(self, month_days: WorkingDays) -> int:
         self._daily_salary = self._calculate_daily_salary(base_working_days=month_days.base_working_days)
 
@@ -126,4 +125,3 @@ class CalculateMonthRateSalary(AbstractSalaryCalculate):
             logger.warning(
                 msg=f'Salary for employee {self.employee} for {month_date.month}/{month_date.year} already paid.',
             )
-            

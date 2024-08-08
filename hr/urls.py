@@ -1,7 +1,13 @@
-from django.urls import path
+from django.urls import path, include
 from django.views.decorators.cache import cache_page
+from rest_framework.routers import DefaultRouter
 from .views import generic_views as views
-from .views import DepartmentViewSet, PositionViewSet, EmployeeViewSet
+from .api_views import DepartmentViewSet, PositionViewSet, EmployeeViewSet, SalaryCalculatorView
+
+router = DefaultRouter()
+router.register(r'departments', DepartmentViewSet)
+router.register(r'positions', PositionViewSet)
+router.register(r'employees', EmployeeViewSet)
 
 urlpatterns = [
     path(
@@ -36,8 +42,6 @@ urlpatterns = [
         views.SalaryCalculatorView.as_view(),
         name="salary_calculator",
     ),
-    
-    path('departments/', DepartmentViewSet.as_view({'get': 'list'}), name='department-list'),
-    path('positions/', PositionViewSet.as_view({'get': 'list'}), name='position-list'),
-    path('employee-viewset/', EmployeeViewSet.as_view({'get': 'list'}), name='employee-viewset-list'),
+    path('', include(router.urls)),
+    path('calculate-salary/', SalaryCalculatorView.as_view(), name='calculate-salary'),
 ]
