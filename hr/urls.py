@@ -6,7 +6,7 @@ from hr.views import generic_views as views
 
 router = DefaultRouter()
 router.register(r'departments', DepartmentViewSet)
-router.register(r'positions', PositionViewSet)
+router.register(r'positions', PositionViewSet, basename='position')
 
 urlpatterns = [
     path(

@@ -26,7 +26,7 @@ class EmployeeProfileViewTest(APITestCase):
         self.assertEqual(response.data['first_name'], self.employee.first_name)
         self.assertEqual(response.data['last_name'], self.employee.last_name)
         self.assertEqual(response.data['email'], self.employee.email)
-        self.assertEqual(response.data['phone'], self.employee.phone)
+        self.assertEqual(response.data['phone_number'], self.employee.phone)
 
 class EmployeeDeleteViewTest(APITestCase):
 
@@ -64,7 +64,7 @@ class EmployeeUpdateViewTest(APITestCase):
             'first_name': fake.first_name(),
             'last_name': fake.last_name(),
             'email': fake.email(),
-            'phone': fake.phone_number(),
+            'phone_number': fake.phone_number(),
             'position': self.position.id
         }
 
