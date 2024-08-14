@@ -75,4 +75,4 @@ class EmployeeUpdateViewTest(APITestCase):
         self.assertEqual(self.employee.first_name, self.new_data['first_name'])
         self.assertEqual(self.employee.last_name, self.new_data['last_name'])
         self.assertEqual(self.employee.email, self.new_data['email'])
-        self.assertEqual(self.employee.phone, self.new_data['phone'])
+        self.assertEqual(self.employee.phone, self.new_data['phone_number'])

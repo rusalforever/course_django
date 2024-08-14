@@ -14,7 +14,7 @@ class Company(models.Model):
     email = models.EmailField()
     tax_code = models.CharField(max_length=200)
 
-    def __str(self):
+    def __str__(self):
         return self.name
 
     @cached_property
@@ -110,7 +110,7 @@ class Salary(models.Model):
     vacation_days = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"Salary for {self.employee.name}"
+        return f"Salary for {self.employee.first_name}"
 
 class MonthlySalary(models.Model):
     month_year = models.DateField()
