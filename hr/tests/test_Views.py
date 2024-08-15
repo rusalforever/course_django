@@ -9,8 +9,8 @@ fake = Faker()
 class EmployeeProfileViewTest(APITestCase):
 
     def setUp(self):
-        self.department = Department.objects.create(name=fake.company())
-        self.position = Position.objects.create(name=fake.job(), department=self.department)
+        self.department = Department.objects.create(name_en=fake.company())
+        self.position = Position.objects.create(name_en=fake.job(), department=self.department)
         self.employee = Employee.objects.create(
             first_name=fake.first_name(),
             last_name=fake.last_name(),
@@ -31,8 +31,8 @@ class EmployeeProfileViewTest(APITestCase):
 class EmployeeDeleteViewTest(APITestCase):
 
     def setUp(self):
-        self.department = Department.objects.create(name=fake.company())
-        self.position = Position.objects.create(name=fake.job(), department=self.department)
+        self.department = Department.objects.create(name_en=fake.company())
+        self.position = Position.objects.create(name_en=fake.job(), department=self.department)
         self.employee = Employee.objects.create(
             first_name=fake.first_name(),
             last_name=fake.last_name(),
@@ -50,8 +50,8 @@ class EmployeeDeleteViewTest(APITestCase):
 class EmployeeUpdateViewTest(APITestCase):
 
     def setUp(self):
-        self.department = Department.objects.create(name=fake.company())
-        self.position = Position.objects.create(name=fake.job(), department=self.department)
+        self.department = Department.objects.create(name_en=fake.company())
+        self.position = Position.objects.create(name_en=fake.job(), department=self.department)
         self.employee = Employee.objects.create(
             first_name=fake.first_name(),
             last_name=fake.last_name(),
