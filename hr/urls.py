@@ -1,8 +1,13 @@
 from django.urls import path
 from django.views.decorators.cache import cache_page
+from rest_framework.routers import DefaultRouter
 
+from hr.api_views import EmployeeViewSet, PositionViewSet
 from hr.views import generic_views as views
 
+router = DefaultRouter()
+router.register(r'employees', EmployeeViewSet, basename='employee')
+router.register(r'positions', PositionViewSet, basename='position')
 
 urlpatterns = [
     path('employees/', cache_page(60, cache='my_key', key_prefix='employee_list')(views.EmployeeListView.as_view()),

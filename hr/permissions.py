@@ -7,6 +7,6 @@ class IsNotRussianEmail(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        if request.user and request.user.email:
-            return not request.user.email.endswith('.ru')
+        if request.user and request.user.is_authenticated:
+            return request.user.email and not request.user.email.endswith('.ru')
         return False
