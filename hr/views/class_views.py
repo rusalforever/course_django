@@ -7,9 +7,11 @@ from django.shortcuts import (
 )
 from django.urls import reverse
 from django.views import View
+from rest_framework import viewsets
 
 from hr.forms import EmployeeForm
-from hr.models import Employee
+from hr.models import Employee, Position
+from hr.serializers import PositionSerializer
 
 
 def user_is_superadmin(user) -> bool:
@@ -76,3 +78,8 @@ class EmployeeDeleteView(UserPassesTestMixin, View):
 
     def test_func(self):
         return user_is_superadmin(self.request.user)
+
+    class PositionViewSet(viewsets.ModelViewSet):
+        queryset = Position.objects.all()
+        serializer_class = PositionSerializer
+

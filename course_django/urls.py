@@ -23,6 +23,7 @@ from django.urls import (
     include,
     path,
 )
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -30,7 +31,11 @@ from rest_framework_simplejwt.views import (
 
 from general.schema import schema_view
 from general.views import HomeViev
+from hr.api_views import EmployeeViewSet, PositionViewSet
 
+router = DefaultRouter()
+router.register(r'employees', EmployeeViewSet, basename='employee')
+router.register(r'positions', PositionViewSet, basename='position')
 
 urlpatterns = [
     path('hr/', include(('hr.urls', 'hr'), namespace='hr')),
@@ -39,6 +44,8 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include(router.urls)),
+    path('employees/', include('hr.urls')),
 ]
 
 urlpatterns += i18n_patterns(

@@ -13,8 +13,8 @@ from hr.api_views import (
 
 
 router = DefaultRouter()
-router.register(r'employees', EmployeeViewSet)
-router.register(r'positions', PositionViewSet)
+router.register(r'employees', EmployeeViewSet, basename='employee')
+router.register(r'positions', PositionViewSet , basename='position')
 
 urlpatterns = [
     path('', include(router.urls)),
